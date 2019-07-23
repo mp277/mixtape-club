@@ -269,22 +269,23 @@ class App extends React.Component {
     /**
      * Function takes the information stored on the state about the playlist,
      * and makes a post request to the server which then stores the information
-     * on the database. Upon succesful storage a second post request is made to the 
+     * on the database. The isPublic value determines whether the playlist will be shared
+     * with the community. Upon succesful storage a second post request is made to the 
      * server to retrieve th playlists id number, so that it may be shared and 
      * displayed on the page. If that call is successful, the client is re-routed
      * to the mixtape player where they can listen to their newly created mix and share it
      * with friends.
      */
     onSavePlaylist() {
-        const {googleId, sideA, sideB, builderImage, tapeLabel} = this.state;
-        console.log(this.state);
+        const {googleId, sideA, sideB, builderImage, tapeLabel, isPublic} = this.state;
         const {image, name} = builderImage
         axios.post('/store', {
                 userId: googleId,
                 aSideLinks: sideA,
                 bSideLinks: sideB,
                 tapeDeck: image,
-                tapeLabel
+                tapeLabel,
+                isPublic
         })
             .then((response) =>{
                 // handle success
