@@ -6,16 +6,16 @@ import { Link } from "react-router-dom";
  */
 
 const UserMixtapesList = (props) => {
-    const { searchResults, userPlaylists, userName, tapeRefresh } = props;
+    const { searchResults, userPlaylists, userName, tapeRefresh, isPublic } = props;
     
     return (
         <ul className="list-group col-12 mx-auto my-mixtape-list">
-            <li className="list-group-item active  border border-info bg-info">My Mixtapes:</li>
+            <li className="list-group-item active  border border-info bg-info"> {isPublic ? 'Public Mixtapes:' : 'My Mixtapes:'} </li>
             {userPlaylists.map((playlist, i) => {
                 return (<li className="list-group-item" key={i} id={playlist._id} onClick={tapeRefresh} >
                     <Link to={`/mixtape-player?id=${playlist._id}`} className="navbar-brand  user-mixes" >{playlist.tapeLabel} {userName !== '' ? `by ${userName}` : null}</Link>
-
-            </li>) })}
+                </li>) 
+            })}
         </ul>
     )
 }
