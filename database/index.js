@@ -45,6 +45,10 @@ const playlistSchema = new mongoose.Schema({
   bTitles: String,
   tapeDeck: String,
   tapeLabel: String,
+  isPublic: {
+    type: Boolean,
+    default: false,
+  }
 });
 playlistSchema.plugin(findOrCreate);
 playlistSchema.plugin(autoIncrement.plugin, 'playlist');
