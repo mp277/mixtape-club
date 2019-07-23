@@ -187,7 +187,7 @@ app.post('/update', (req, res) => {
 app.post('/store', (req, res) => {
   // need to figure out how we are sending info to endpoint
   const {
-    userId, aSideLinks, bSideLinks, tapeDeck, tapeLabel,
+    userId, aSideLinks, bSideLinks, tapeDeck, tapeLabel, isPublic,
   } = req.body;
   const playlistDetails = {
     userId,
@@ -195,6 +195,7 @@ app.post('/store', (req, res) => {
     bSideLinks: JSON.stringify(bSideLinks),
     tapeDeck,
     tapeLabel,
+    isPublic,
   };
   // console.log(playlistDetails);
   db.storePlaylist(playlistDetails, (response) => {
