@@ -266,6 +266,23 @@ app.post('/mixtape-player/', (req, res) => {
 });
 
 /**
+ * Get request used to query database for all public tapes and send
+ * the video and styling info to the client
+ */
+
+app.get('/public', (req, res) => {
+  db.getAllPlaylists({ isPublic: true }, (info, response) => {
+    if (!response) {
+      res.status(300).send('No public tapes found');
+    }
+    const data = { response };
+    res.status(200).send(data);
+  }).catch((err) => {
+    console.error(err);
+  });
+});
+
+/**
  * Post request used to search information based on user input
  * axios.get request sent to google's api to retrieve snippet from youtube containing music
  */
