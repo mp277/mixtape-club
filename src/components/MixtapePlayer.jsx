@@ -20,56 +20,56 @@ import LisaFrankenstein from '../assets/img/tapes/lisa-frankenstein-tape.gif';
 
 
 class MixtapePlayer extends React.Component {
-constructor(props){
-    super(props);
-    this.state = {
-        player: null,
-        playing: false,
-        aSideLinks: ["fi33-cITS0s"],
-        bSideLinks: ["H1Zm6E6Sy4Y"],
-        interval: null,
-        playListId: null || this.props.location,
-        aSideTitles: ['Login to start making mixtapes of your own!'],
-        bSideTitles: ['Login to start making mixtapes of your own!'],
-        tapeCover: LisaFrankenstein,
-        sidePlaying: ["fi33-cITS0s"],
-        googleId: null || this.props.googleId,
-        userPlaylists: [],
-        tapeTitle: 'Operation Sparkle',
-        currentSong: "",
-        userName: '',
-        currentPlaylistId: '',
-        toggleLink: false,
-    }
-    
-    this.getUserPlaylists()
-    this.onReady = this.onReady.bind(this);
-    this.onPlayVideo = this.onPlayVideo.bind(this);
-    this.onPauseVideo = this.onPauseVideo.bind(this);
-    this.onForward = this.onForward.bind(this);
-    this.onStopForward = this.onStopForward.bind(this);
-    this.onBackward = this.onBackward.bind(this);
-    this.onStopBackward = this.onStopBackward.bind(this);
-    this.onFlip = this.onFlip.bind(this);
-    this.checkVid = this.checkVid.bind(this);
-    this.tapeRefresh = this.tapeRefresh.bind(this);
-    this.onToggleShareLink = this.onToggleShareLink.bind(this);
-    
-    this.divStyle = {
-        borderRadius: '5px',
-        marginTop: '-360px'
-    }
-    this.iconStyle = {
-        margin: '3% 0',
-    }
-}
-
-componentWillMount() {
-    this.loadShared()
-    if(this.state.googleId !== null){
+    constructor(props){
+        super(props);
+        this.state = {
+            player: null,
+            playing: false,
+            aSideLinks: ["fi33-cITS0s"],
+            bSideLinks: ["H1Zm6E6Sy4Y"],
+            interval: null,
+            playListId: null || this.props.location,
+            aSideTitles: ['Login to start making mixtapes of your own!'],
+            bSideTitles: ['Login to start making mixtapes of your own!'],
+            tapeCover: LisaFrankenstein,
+            sidePlaying: ["fi33-cITS0s"],
+            googleId: null || this.props.googleId,
+            userPlaylists: [],
+            tapeTitle: 'Operation Sparkle',
+            currentSong: "",
+            userName: '',
+            currentPlaylistId: '',
+            toggleLink: false,
+        }
+        
         this.getUserPlaylists();
+        this.onReady = this.onReady.bind(this);
+        this.onPlayVideo = this.onPlayVideo.bind(this);
+        this.onPauseVideo = this.onPauseVideo.bind(this);
+        this.onForward = this.onForward.bind(this);
+        this.onStopForward = this.onStopForward.bind(this);
+        this.onBackward = this.onBackward.bind(this);
+        this.onStopBackward = this.onStopBackward.bind(this);
+        this.onFlip = this.onFlip.bind(this);
+        this.checkVid = this.checkVid.bind(this);
+        this.tapeRefresh = this.tapeRefresh.bind(this);
+        this.onToggleShareLink = this.onToggleShareLink.bind(this);
+        
+        this.divStyle = {
+            borderRadius: '5px',
+            marginTop: '-360px'
+        }
+        this.iconStyle = {
+            margin: '3% 0',
+        }
     }
-}
+
+    componentWillMount() {
+        this.loadShared()
+        if(this.state.googleId !== null){
+            this.getUserPlaylists();
+        }
+    }
 
 /**
  * Function makes get request to the server, which then retrieves
@@ -78,12 +78,15 @@ componentWillMount() {
  * state of the component.
  */
     getUserPlaylists(){
-        const { googleId, isPublic } = this.state
-        
-        return isPublic ? axios.get('/userPlaylists', { googleId }) : axios.get('/public', { googleId })
+        const { googleId } = this.state;
+        const { isPublic } = this.props;
+
+        const endpoint = isPublic ? '/public' : '/userPlaylists' ;
+
+        axios.get(endpoint, { googleId })
             .then((response) => {
                 const {data} = response;
-                
+                console.log('test', data);
                 let aVideoArray = [];
                 let bVideoArray = [];
                 let aTitleArray = [];
@@ -350,7 +353,7 @@ componentWillMount() {
     render (){
 
         const { aSideLinks, bSideLinks, aSideTitles, bSideTitles, tapeCover, userPlaylists, tapeTitle, currentSong, userName, currentPlaylistId, toggleLink} = this.state;
-
+        const { isPublic } = this.props;
         return(
         <div>
         <h4 className="player-tape-label">{tapeTitle}</h4>
@@ -367,7 +370,7 @@ componentWillMount() {
                 </div>
 
                 <PlayerSongList onFlip={this.onFlip} currentSong={currentSong} aSideLinks={aSideLinks} bSideLinks={bSideLinks} aSideTitles={aSideTitles} bSideTitles={bSideTitles} currentPlaylistId={currentPlaylistId} toggleLink={toggleLink} onToggleLink={this.onToggleShareLink} />
-                <UserMixtapesList isPublic={this.props.isPublic} userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
+                <UserMixtapesList isPublic={isPublic} userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
         </div>
         )
     };

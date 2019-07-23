@@ -135,6 +135,29 @@ app.get('/userPlaylists', (req, res) => {
 });
 
 /**
+ * Get request used to query database for all public tapes and send
+ * the video and styling info to the client
+ */
+
+app.get('/public', (req, res) => {
+  // if (req.user) {
+  db.getAllPlaylists({ isPublic: true }, async (info, response) => {
+    try {
+      console.log('data', response);
+      if (!response.length) {
+        res.status(300).send('No public tapes found');
+      }
+      const data = { response };
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(500);
+      console.log(err);
+    }
+  });
+  // }
+});
+
+/**
  * Get request handler used to redirect users to mixtape-player endpoint after login
  */
 
@@ -263,23 +286,6 @@ app.post('/mixtape-player/', (req, res) => {
         res.send(data);
       }
     }
-  });
-});
-
-/**
- * Get request used to query database for all public tapes and send
- * the video and styling info to the client
- */
-
-app.get('/public', (req, res) => {
-  db.getAllPlaylists({ isPublic: true }, (info, response) => {
-    if (!response) {
-      res.status(300).send('No public tapes found');
-    }
-    const data = { response };
-    res.status(200).send(data);
-  }).catch((err) => {
-    console.error(err);
   });
 });
 
