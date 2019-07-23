@@ -48,7 +48,7 @@ const playlistSchema = new mongoose.Schema({
   isPublic: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 playlistSchema.plugin(findOrCreate);
 playlistSchema.plugin(autoIncrement.plugin, 'playlist');
@@ -104,7 +104,7 @@ const storePlaylist = (plDetails, callback) => {
   // plDetails is an object with all of our columns needing to be saved
   // when sending in request, please be sure  to include all fields, all are stings.
   const {
-    userId, aSideLinks, bSideLinks, aTitles, bTitles, tapeDeck, tapeLabel,
+    userId, aSideLinks, bSideLinks, aTitles, bTitles, tapeDeck, tapeLabel, isPublic,
   } = plDetails;
   const playlistInfo = new Playlist({
     userId,
@@ -114,6 +114,7 @@ const storePlaylist = (plDetails, callback) => {
     bTitles,
     tapeDeck,
     tapeLabel,
+    isPublic,
   });
   playlistInfo.save((err) => {
     if (err) {
