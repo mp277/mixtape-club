@@ -5,7 +5,6 @@ import Landing from "./Landing.jsx";
 import Login from "./Login.jsx";
 import CreateMixtapes from "./CreateMixtapes.jsx";
 import MixtapePlayer from "./MixtapePlayer.jsx";
-import CommunityTapes from "./CommunityTapes.jsx";
 
 /** Container component handles the front-end routing/rendering of the app and renders the Login,
  * CreateMixtapes, and MixtapePlayer components at their respective routes. Container is a child 
@@ -26,16 +25,16 @@ function Container(props) {
                     render={(props) => isAuthenticated ? (<CreateMixtapes {...props} searchResults={searchResults} authenticateUser={authenticateUser} onReady={onReady} onSearch={onSearch} onChange={onChange} onPauseVideo={onPauseVideo} onPlayVideo={onPlayVideo} onResultClick={onResultClick} playing={playing} selectedResult={selectedResult} tapeImages={tapeImages} builderImage={builderImage} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onPassToSideA={onPassToSideA} sideA={sideA} onPassToSideB={onPassToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={onDelete} />) : (<Login {...props} />) } />
 
                     <Route path='/mixtape-player'
-                    render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam} googleId={googleId}/>} />
+                    render={(props) => <MixtapePlayer {...props} isPublic={false} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam} googleId={googleId}/>} />
 
                     <Route path='/mixtape-player/:id' component={MixtapePlayer}
-                    render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
+                    render={(props) => <MixtapePlayer {...props} isPublic={false} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
 
                     <Route path='/login'
                     render={(props) => <Login {...props} />} />
 
-                    <Route path='/community-tapes'
-                    render={(props) => <CommunityTapes {...props} /* searchResults, communityPlaylists, userName, tapeRefresh */ />} />
+                    <Route path='/mixtape-player/public' component={MixtapePlayer}
+                    render={(props) => <MixtapePlayer {...props} isPublic={true} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
                 </Switch>
             </section>
     );
