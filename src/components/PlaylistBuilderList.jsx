@@ -7,8 +7,10 @@ import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
  */
 
 const PlaylistBuilderList = (props) => {
-    const { builderImage, tapeLabel, sideA , sideB, onSaveImage, onSavePlaylist, onDelete } = props;
-    
+    const { builderImage, tapeLabel, sideA , sideB, onSaveImage, onSavePlaylist, onMakePublic, onDelete, isPublic } = props;
+
+    const shareCommunityLabel = "Share with the community";
+
     return (
         <div className="border border-info playlist-builder shadow-sm p-3 mb-5 bg-white rounded">
         <div className="row">
@@ -17,6 +19,10 @@ const PlaylistBuilderList = (props) => {
                     <img className="col-md-12" src={builderImage.image} style={{ margin: ".4rem 0" }}/>
                     <button className="btn btn-outline-info col-6 col-md-12 mx-auto" type="submit" style={{ margin: ".4rem 0" }} onClick={onSaveImage}>Edit Cassette</button>
                     <button className="btn btn-info col-6 col-md-12 mx-auto" type="submit" onClick={onSavePlaylist}>Save Mixtape</button>   
+                    <label>
+                        <input type="checkbox" name={shareCommunityLabel} value={isPublic} checked={isPublic} onChange={onMakePublic} />
+                    </label>
+                    { shareCommunityLabel }
                  </div>
                 <div className="col-sm-4 col-md-2" style={{marginTop: "1rem"}}>
                     <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
