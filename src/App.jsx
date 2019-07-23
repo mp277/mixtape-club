@@ -44,6 +44,7 @@ class App extends React.Component {
             googleId: 'FILL_ME_IN',
             tapeBackgroundColor: '#fff',
             queryParam: "",
+            isPublic: false,
         }
 
         this.onSearch = this.onSearch.bind(this);
@@ -62,6 +63,7 @@ class App extends React.Component {
         this.onDeleteSong = this.onDeleteSong.bind(this);
         this.authenticateUser = this.authenticateUser.bind(this);
         this.logout = this.logout.bind(this);
+        this.onMakePublic = this.onMakePublic.bind(this);
     }
 
     /**
@@ -314,6 +316,20 @@ class App extends React.Component {
 
 
     /**
+     * Function that takes the value of a Make Public radio button and sets it to state.
+     * The value determines whether or not to share the mixtape with the broader community.
+     * @param {*} event - click event that's current target is the value of making a playlist public
+     */
+    onMakePublic(event) {
+        const { value } = event.target;
+        const isPublic = value === 'true' || value === true;
+        this.setState({
+            isPublic: !isPublic,
+        });
+    }
+
+
+    /**
      * Function that removes song from playlistBuilderList.
      * @param {*} event - click event that's currentTarge.id is the song selected for removal from the playlist.
      */
@@ -339,12 +355,12 @@ class App extends React.Component {
 
 
     render() {
-        const { isAuthenticated, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName } = this.state;
+        const { isAuthenticated, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, isPublic } = this.state;
         return (
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>
+                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId}/>
 
                 </div>
             </Router>
