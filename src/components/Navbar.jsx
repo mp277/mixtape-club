@@ -23,7 +23,12 @@ const Navigation = (props) => {
                     </li>
                     <li className="nav-item">
                         <Link to="/mixtape-player" className="nav-link">Mixtape Player</Link>
+                    </li> 
+                    {/* need to define a public page for viewing/selecting public tapes */}
+                    <li className="nav-item">
+                        <Link to="" className="nav-link">Public Tapes</Link>
                     </li>
+                    
                     <li className="nav-item">
                         {isAuthenticated ? <Link className="nav-link" to="/login" onClick={logout}>Logout</Link> : <Link to="/login"  className="nav-link">Login</Link>}
                     </li>
