@@ -151,10 +151,10 @@ const retrievePlaylist = (filter, callback) => {
 const getAllPlaylists = (filter, callback) => {
   Playlist.find(filter, (err, data) => {
     if (err) {
-      console.log('error', err);
+      // console.log('error', err);
       callback(err);
     } else {
-      console.log('data', data);
+      // console.log('data', data);
       callback(null, data);
     }
   });
