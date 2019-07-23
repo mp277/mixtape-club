@@ -78,49 +78,47 @@ componentWillMount() {
  * state of the component.
  */
     getUserPlaylists(){
-        const {googleId} = this.state
+        const { googleId } = this.state
         
-        axios.get('/userPlaylists', {
-            googleId
-        })
-        .then((response) => {
-            const {data} = response;
-            
-            let aVideoArray = [];
-            let bVideoArray = [];
-            let aTitleArray = [];
-            let bTitleArray = [];
-            let aSide = JSON.parse(data.response[0].aSideLinks);
-            let bSide = JSON.parse(data.response[0].bSideLinks);
-            this.setState({
-                userPlaylists: data.response,
-                userName: data.displayName,
-            })
-            if(!this.state.currentPlaylistId){
-                aSide.forEach(video => {
-                    aVideoArray.push(video.id.videoId);
-                    aTitleArray.push(video.snippet.title);
-                })
-                bSide.forEach(video => {
-                    bVideoArray.push(video.id.videoId);
-                    bTitleArray.push(video.snippet.title);
-                })
+        return this.props.isPublic ? axios.get('/userPlaylists', { googleId }) : axios.get('/public', { googleId })
+            .then((response) => {
+                const {data} = response;
+                
+                let aVideoArray = [];
+                let bVideoArray = [];
+                let aTitleArray = [];
+                let bTitleArray = [];
+                let aSide = JSON.parse(data.response[0].aSideLinks);
+                let bSide = JSON.parse(data.response[0].bSideLinks);
                 this.setState({
-                currentPlaylistId: data.response[0]._id,
-                aSideLinks: aVideoArray,
-                bSideLinks: bVideoArray,
-                aSideTitles: aTitleArray,
-                bSideTitles: bTitleArray,
-                tapeCover: data.response[0].tapeDeck,
-                sidePlaying: aVideoArray,
-                tapeTitle: data.response[0].tapeLabel
+                    userPlaylists: data.response,
+                    userName: data.displayName || 'Public',
+                })
+                if(!this.state.currentPlaylistId){
+                    aSide.forEach(video => {
+                        aVideoArray.push(video.id.videoId);
+                        aTitleArray.push(video.snippet.title);
+                    })
+                    bSide.forEach(video => {
+                        bVideoArray.push(video.id.videoId);
+                        bTitleArray.push(video.snippet.title);
+                    })
+                    this.setState({
+                        currentPlaylistId: data.response[0]._id,
+                        aSideLinks: aVideoArray,
+                        bSideLinks: bVideoArray,
+                        aSideTitles: aTitleArray,
+                        bSideTitles: bTitleArray,
+                        tapeCover: data.response[0].tapeDeck,
+                        sidePlaying: aVideoArray,
+                        tapeTitle: data.response[0].tapeLabel
+                    })
+                    this.state.player.loadPlaylist({ playlist: this.state.sidePlaying });
+                }
             })
-            this.state.player.loadPlaylist({ playlist: this.state.sidePlaying });
-        }
-        })
-        .catch((err) => {
-            console.error('Error searching:', err)
-        })
+            .catch((err) => {
+                console.error('Error searching:', err)
+            })
     }
 
     /**
@@ -140,9 +138,7 @@ componentWillMount() {
             });
 
             let id = search.slice(4);
-            axios.post('/mixtape-player', {
-                id,
-            })
+            axios.post('/mixtape-player', { id })
                 .then((response) => {
                     if (response.data.bSide) {
                         const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
