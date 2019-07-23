@@ -186,8 +186,15 @@ class App extends React.Component {
         let query = this.state.query;
         axios.post('/search', {query})
         .then((response) => {
-            const sideA = response.data.items.slice(0, 5);
-            const sideB = response.data.items.slice(5);
+            const tracks = response.data.items;
+            tracks.forEach(track => {
+                let title = track.snippet.title.replace(/&amp;/g, '&');
+                title = title.replace(/&#39;/g, '\'');
+                title = title.replace(/&quot;/g, '\"');
+                track.snippet.title = title;
+            });
+            const sideA = tracks.slice(0, 5);
+            const sideB = tracks.slice(5);
             this.setState({
                 sideA,
                 sideB,
