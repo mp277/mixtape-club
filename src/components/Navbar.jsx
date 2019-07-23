@@ -24,7 +24,6 @@ const Navigation = (props) => {
                     <li className="nav-item">
                         <Link to="/mixtape-player" className="nav-link">Mixtape Player</Link>
                     </li> 
-                    {/* need to define a public page for viewing/selecting public tapes */}
                     <li className="nav-item">
                         <Link to="/mixtape-player/public" className="nav-link">Public Tapes</Link>
                     </li>
@@ -33,8 +32,8 @@ const Navigation = (props) => {
                     </li>
                 </ul>
                 
-  </div>
-</nav>
+            </div>
+        </nav>
     )
 };
 

@@ -78,9 +78,9 @@ componentWillMount() {
  * state of the component.
  */
     getUserPlaylists(){
-        const { googleId } = this.state
+        const { googleId, isPublic } = this.state
         
-        return this.props.isPublic ? axios.get('/userPlaylists', { googleId }) : axios.get('/public', { googleId })
+        return isPublic ? axios.get('/userPlaylists', { googleId }) : axios.get('/public', { googleId })
             .then((response) => {
                 const {data} = response;
                 
@@ -367,7 +367,7 @@ componentWillMount() {
                 </div>
 
                 <PlayerSongList onFlip={this.onFlip} currentSong={currentSong} aSideLinks={aSideLinks} bSideLinks={bSideLinks} aSideTitles={aSideTitles} bSideTitles={bSideTitles} currentPlaylistId={currentPlaylistId} toggleLink={toggleLink} onToggleLink={this.onToggleShareLink} />
-                <UserMixtapesList userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
+                <UserMixtapesList isPublic={this.props.isPublic} userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
         </div>
         )
     };
