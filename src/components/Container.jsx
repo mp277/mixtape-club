@@ -34,7 +34,7 @@ function Container(props) {
                     render={(props) => <Login {...props} />} />
 
                     <Route path='/mixtape-player/public'
-                    render={(props) => <MixtapePlayer {...props} isPublic={true} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
+                    render={(props) => <MixtapePlayer {...props} isPublic={true} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam} googleId={googleId}/>} />
                 </Switch>
             </section>
     );
