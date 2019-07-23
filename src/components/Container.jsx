@@ -5,6 +5,7 @@ import Landing from "./Landing.jsx";
 import Login from "./Login.jsx";
 import CreateMixtapes from "./CreateMixtapes.jsx";
 import MixtapePlayer from "./MixtapePlayer.jsx";
+import CommunityTapes from "./CommunityTapes.jsx";
 
 /** Container component handles the front-end routing/rendering of the app and renders the Login,
  * CreateMixtapes, and MixtapePlayer components at their respective routes. Container is a child 
@@ -33,6 +34,8 @@ function Container(props) {
                     <Route path='/login'
                     render={(props) => <Login {...props} />} />
 
+                    <Route path='/community-tapes'
+                    render={(props) => <CommunityTapes {...props} /* searchResults, communityPlaylists, userName, tapeRefresh */ />} />
                 </Switch>
             </section>
     );
