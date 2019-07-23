@@ -33,7 +33,7 @@ function Container(props) {
                     <Route path='/login'
                     render={(props) => <Login {...props} />} />
 
-                    <Route path='/mixtape-player/public' component={MixtapePlayer}
+                    <Route path='/mixtape-player/public'
                     render={(props) => <MixtapePlayer {...props} isPublic={true} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
                 </Switch>
             </section>
