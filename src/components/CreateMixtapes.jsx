@@ -13,17 +13,21 @@ import SearchPlayer from './SearchPlayer.jsx';
 
 const CreateMixtapes = (props) => {
 
-    const { authenticateUser, searchResults, onSearch, onChange, onPlayVideo, onPauseVideo, onReady, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onSavePlaylist, onMakePublic, tapeBackgroundColor, onDelete, isPublic, queryParam } = props;
+    const { authenticateUser, searchResults, onSearch, onChange, onPlayVideo, onPauseVideo, onBackward, onForward, onStopBackward, onStopForward, onReady, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onSavePlaylist, onMakePublic, recording, onStopRecordVideo, onRecordVideo, tapeBackgroundColor, onDelete, isPublic, queryParam } = props;
   
     return (
         <div style={{marginTop: '4rem'}}>
-            {displayImageSelector ? <PlaylistImageSelector tapeImages={tapeImages} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onSaveImage={onSaveImage} builderImage={builderImage} tapeBackgroundColor={tapeBackgroundColor} /> :
-        <div className="mx-auto" style={{maxWidth: '860px'}}>
-            <Search onSearch={onSearch} onChange={onChange} />
-            <SearchPlayer onPlayVideo={onPlayVideo} onReady={onReady} onPauseVideo={onPauseVideo} playing={playing} searchResults={searchResults} selectedResult={selectedResult} onPassToSideA={onPassToSideA} onPassToSideB={onPassToSideB} />
-            <SearchList searchResults={searchResults} onResultClick={onResultClick}/>
-            <PlaylistBuilderList builderImage={builderImage} tapeLabel={tapeLabel} sideA={sideA} sideB={sideB} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} onMakePublic={onMakePublic} onDelete={onDelete} queryParam={queryParam} isPublic={isPublic} />
-        </div>}
+            {
+                displayImageSelector ? 
+                    <PlaylistImageSelector tapeImages={tapeImages} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onSaveImage={onSaveImage} builderImage={builderImage} tapeBackgroundColor={tapeBackgroundColor}/> 
+                    :
+                    <div className="mx-auto" style={{maxWidth: '860px'}}>
+                        <Search onSearch={onSearch} onChange={onChange} />
+                        <SearchPlayer onPlayVideo={onPlayVideo} onReady={onReady} onPauseVideo={onPauseVideo} onBackward={onBackward} onForward={onForward} onStopBackward={onStopBackward} onStopForward={onStopForward} playing={playing} recording={recording} onStopRecordVideo={onStopRecordVideo} onRecordVideo={onRecordVideo} searchResults={searchResults} selectedResult={selectedResult} onPassToSideA={onPassToSideA} onPassToSideB={onPassToSideB} />
+                        <SearchList searchResults={searchResults} onResultClick={onResultClick}/>
+                        <PlaylistBuilderList builderImage={builderImage} tapeLabel={tapeLabel} sideA={sideA} sideB={sideB} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} onMakePublic={onMakePublic} onDelete={onDelete} queryParam={queryParam} isPublic={isPublic} />
+                    </div>
+            }
         </div>
     )
 }
