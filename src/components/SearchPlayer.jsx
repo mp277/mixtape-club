@@ -8,7 +8,7 @@ import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCirc
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts } = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser, } = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -49,6 +49,42 @@ const SearchPlayer = (props) => {
         marginLeft: '-2000px',
         marginTop: '0.5rem',
     }
+
+    const initiateStopRecordUser = (chunks, mediaRecord) => {
+        mediaRecord.onstop = () => {
+            const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            stopRecordUser(blob);
+        }
+        mediaRecord.stop();
+    }
+
+    const initiateRecordUser = () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            console.log('getUserMedia supported.');
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then((stream) => {
+                startRecordUser();
+                const mediaRecord = new MediaRecorder(stream);
+                mediaRecord.start();
+
+                const chunks = [];
+                mediaRecord.ondataavailable = (event) => {
+                    chunks.push(event.data);
+                }
+
+                const stop = document.querySelector('#stop-record-user');
+                console.log(stop);
+                // stop.onclick = initiateStopRecordUser(chunks, mediaRecord);
+                stop.onclick = initiateStopRecordUser.bind(stop, chunks, mediaRecord);
+            })
+            .catch((err) => {
+                console.log('The following getUserMedia error occured: ' + err);
+            });
+        } else {
+            console.log('getUserMedia not supported on your browser!');
+        }
+    }
+    
     
     return (
         <div>
@@ -76,7 +112,12 @@ const SearchPlayer = (props) => {
                     <h4 style={titleStyle}>{title}</h4> 
                 </div>
                 <div className="row col-11 col-md-3 player-button-row mx-auto">
-                    <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record Audio</button>
+                    {
+                        recordUser ?
+                            <button className="btn btn-light col-4 col-md-7" id="stop-record-user" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: 'red' }}><FontAwesomeIcon style={{ color: 'red' }} icon={faPlus} /> Record Audio</button>
+                        :
+                            <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={initiateRecordUser}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record Audio</button>
+                    }
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideA(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Side A</button>
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideB(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8'}} icon={faPlus}/> Side B</button>
                 </div>
