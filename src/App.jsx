@@ -510,7 +510,10 @@ class App extends React.Component {
         this.setState({
             recordUser: false,
         });
-        axios.post('/upload', blob, {
+        const formData = new FormData();
+        formData.append('name', 'recording');
+        formData.append('recording', blob);
+        axios.post('/upload', formData, {
             'Content-Type': 'multipart/form-data',
         })
     }
