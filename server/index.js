@@ -7,17 +7,20 @@ const multer = require('multer');
 const FfmpegCommand = require('fluent-ffmpeg');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const { google } = require('googleapis');
 const db = require('../database/index.js');
 
 /**
  * express required to aid in in handeling request made to server
- * multer required to aid in parsing multiform media, such as audio recordings
  * session required to aid with passport request for google authentication
  * path required to aid in redirects to avoid landing on incorrect endpoint
  * axios required to send requests
  * bodyParse required to retrieve information from body while avoiding chunks
+ * multer required to aid in parsing multiform media, such as audio recordings
+ * FfmpegCommand required to convert audio to video
  * passport required in retrieving info from google authentication
  * GoogleStrategy required to retireve user's google infromation to store users
+ * google required to upload videos to youtube
  * db required as a path to our database commands
  */
 
@@ -34,6 +37,25 @@ const app = express();
  */
 
 const upload = multer();
+
+/**
+ * create an oAuth client for video uploads
+ */
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  'http://localhost:3000/mixtape-player',
+);
+
+/**
+ * Initialize youtube API library
+ */
+
+const youtube = google.youtube({
+  version: 'v3',
+  auth: oauth2Client,
+});
 
 /**
  * middleware assigned to app to aid in any incoming requests
@@ -213,9 +235,10 @@ app.post('/update', (req, res) => {
 });
 
 app.post('/upload', upload.single('recording'), (req, res) => {
-  const { recording } = req.file;
-  const command = new FfmpegCommand(recording)
-    .input('./images/cassette-tape.jpg');
+  const { buffer: recording } = req.file;
+  const video = new FfmpegCommand(recording)
+    .input('./images/cassette-tape.jpg')
+    .setVideoFormat('avi');
 });
 
 /**
