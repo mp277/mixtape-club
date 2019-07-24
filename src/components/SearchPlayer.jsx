@@ -108,9 +108,9 @@ const SearchPlayer = (props) => {
                     }
                     {
                         recording ? 
-                            <FontAwesomeIcon style={iconStyle} icon={faDotCircle} onClick={onRecordVideo}/>
-                        :
                             <FontAwesomeIcon style={iconStyleRecord} icon={faStopCircle} onClick={onStopRecordVideo}/>
+                        :
+                            <FontAwesomeIcon style={iconStyle} icon={faDotCircle} onClick={onRecordVideo}/>
                     }
                     <FontAwesomeIcon style={iconStyle} icon={faForward} onMouseDown={onForward} onMouseUp={onStopForward} />
                 </div>

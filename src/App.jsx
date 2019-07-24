@@ -52,6 +52,7 @@ class App extends React.Component {
 
         this.onSearch = this.onSearch.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onGenerate = this.onGenerate.bind(this);
         this.onPlayVideo = this.onPlayVideo.bind(this);
         this.onRecordVideo = this.onRecordVideo.bind(this);
         this.onStopRecordVideo = this.onStopRecordVideo.bind(this);
@@ -201,6 +202,29 @@ class App extends React.Component {
         .catch((err)=> {
             console.error('Error searching:', err)
         })
+    }
+
+    onGenerate(){
+        let query = this.state.query;
+        axios.post('/search', {query})
+        .then((response) => {
+            const tracks = response.data.items;
+            tracks.forEach(track => {
+                let title = track.snippet.title.replace(/&amp;/g, '&');
+                title = title.replace(/&#39;/g, '\'');
+                title = title.replace(/&quot;/g, '\"');
+                track.snippet.title = title;
+            });
+            const sideA = tracks.slice(0, 5);
+            const sideB = tracks.slice(5);
+            this.setState({
+                sideA,
+                sideB,
+            });
+        })
+        .catch((err) => {
+            console.error('Error searching:', err);
+        });
     }
 
     /**
@@ -383,7 +407,7 @@ class App extends React.Component {
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId}/>
+                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId}/>
 
                 </div>
             </Router>
