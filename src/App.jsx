@@ -155,6 +155,7 @@ class App extends React.Component {
         this.setState({
             stopSong: time,
             recording: false,
+            playing: false
         })
 
         const { startSong, stopSong } = this.state;
@@ -166,6 +167,7 @@ class App extends React.Component {
                     end: stopSong,
                 }
             },
+
         })
     }
 
