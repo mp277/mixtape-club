@@ -13,7 +13,7 @@ import SearchPlayer from './SearchPlayer.jsx';
 
 const CreateMixtapes = (props) => {
 
-    const { authenticateUser, searchResults, onSearch, onChange, onGenerate, onPlayVideo, onPauseVideo, onReady, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onSavePlaylist, onMakePublic, tapeBackgroundColor, onDelete, isPublic, queryParam } = props;
+    const { authenticateUser, searchResults, onSearch, onChange, onGenerate, onPlayVideo, onPauseVideo, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, onReady, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onSavePlaylist, onMakePublic, tapeBackgroundColor, onDelete, isPublic, queryParam } = props;
   
     return (
         <div style={{marginTop: '4rem'}}>

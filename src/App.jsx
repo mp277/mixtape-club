@@ -59,6 +59,10 @@ class App extends React.Component {
         this.onPauseVideo = this.onPauseVideo.bind(this);
         this.onReady = this.onReady.bind(this);
     
+        this.onForward = this.onForward.bind(this);
+        this.onBackward = this.onBackward.bind(this);
+        this.onStopForward = this.onStopForward.bind(this);
+        this.onStopBackward = this.onStopBackward.bind(this);
         this.onSelectTapeImage = this.onSelectTapeImage.bind(this);
         this.onTapeLabelChange = this.onTapeLabelChange.bind(this);
         this.onResultClick = this.onResultClick.bind(this);
@@ -150,7 +154,6 @@ class App extends React.Component {
             recording: false,
         })
     }
-
 
     onPauseVideo() {
         this.state.player.pauseVideo();
@@ -400,6 +403,48 @@ class App extends React.Component {
 
     }
 
+     /**
+     * Function triggered by the fast-forward button. Mimics fast-forward by changing the playback
+     * rate and lowering the volume while the button is held-down.
+     */
+    onForward() {
+        this.state.player.setPlaybackRate(2);
+        this.state.player.setVolume(50);
+    }
+    
+    /**
+     * Function that restores the volume and speed of the player when the fast-forward
+     * button is released.
+     */
+    onStopForward() {
+        this.state.player.setPlaybackRate(1.0);
+        this.state.player.setVolume(100);
+    }
+
+    /**
+     * Function triggered by the rewind button mouseDown event that mimics rewind functionality.
+     * When the button is held-down the function retrieves the current time of the video then
+     * subtracts from that value to seek backwards on the player on an interval.
+     */
+    onBackward() {
+        let time = this.state.player.getCurrentTime();
+        this.state.player.setVolume(50);
+        this.state.interval = setInterval(() => {
+            time -= 2;
+            this.state.player.seekTo(time);
+        }, 90)
+    }
+
+    /**
+     * Function triggered by the mouseUp event of the rewind button that clears the interval, triggers 
+     * the video to play again, and restores the volume of the player.
+     */
+    onStopBackward() {
+        clearInterval(this.state.interval);
+        this.state.player.playVideo();
+        this.state.player.setVolume(100);
+    }
+
 
     render() {
         const { isAuthenticated, searchResults, playing, recording, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, isPublic } = this.state;
@@ -407,7 +452,7 @@ class App extends React.Component {
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId}/>
+                    <Container onForward={this.onForward} onBackward={this.onBackward} onStopBackward={this.onStopBackward} onStopForward={this.onStopForward} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId}/>
 
                 </div>
             </Router>
