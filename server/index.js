@@ -211,8 +211,8 @@ app.post('/update', (req, res) => {
   });
 });
 
-app.post('/upload', (req, res) => {
-
+app.post('/upload', upload.single('recording'), (req, res) => {
+  const { recording } = req.file;
 });
 
 /**
