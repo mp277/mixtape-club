@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const session = require('express-session');
 const path = require('path');
 const axios = require('axios');
@@ -9,6 +10,7 @@ const db = require('../database/index.js');
 
 /**
  * express required to aid in in handeling request made to server
+ * multer required to aid in parsing multiform media, such as audio recordings
  * session required to aid with passport request for google authentication
  * path required to aid in redirects to avoid landing on incorrect endpoint
  * axios required to send requests
@@ -25,6 +27,12 @@ require('dotenv').config();
  */
 
 const app = express();
+
+/**
+ * upload rename to aid in obtaining audiofiles
+ */
+
+const upload = multer();
 
 /**
  * middleware assigned to app to aid in any incoming requests
@@ -201,6 +209,10 @@ app.post('/update', (req, res) => {
     console.log(response);
     res.end('Playlist Updated');
   });
+});
+
+app.post('/upload', (req, res) => {
+
 });
 
 /**
