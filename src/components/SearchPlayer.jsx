@@ -47,6 +47,23 @@ const SearchPlayer = (props) => {
         }, 90)
     }
 
+
+
+    /**
+     * Checking if user has the necessary media/ gives permissions for using the audio media device
+     * Microphone
+     */
+
+     const hasGetUserMedia = () => {
+         return !!(navigator.mediaDevices &&
+            navigator.mediaDevices.getUserMedia);
+     }
+
+
+
+
+
+
     /**
      * Function triggered by the mouseUp event of the rewind button that clears the interval, triggers 
      * the video to play again, and restores the volume of the player.
@@ -118,6 +135,7 @@ const SearchPlayer = (props) => {
                     <h4 style={titleStyle}>{title}</h4> 
                 </div>
                 <div className="row col-11 col-md-3 player-button-row mx-auto">
+                    <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record Audio</button>
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideA(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Side A</button>
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideB(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8'}} icon={faPlus}/> Side B</button>
                 </div>
