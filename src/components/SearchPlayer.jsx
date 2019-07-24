@@ -8,7 +8,7 @@ import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCirc
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB } = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts } = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -112,7 +112,7 @@ const SearchPlayer = (props) => {
     return (
         <div>
             <div style={vidStyle}>
-                <YouTube videoId={selectedResult.id.videoId} onReady={onReady} /* opts={} */ />
+                <YouTube videoId={selectedResult.id.videoId} onReady={onReady} opts={opts} />
             </div>
             <div className="row col-12 bg-info d-flex mx-auto" style={divStyle}>
                 <div className="col-2 col-md-1" >       
