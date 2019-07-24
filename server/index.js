@@ -1,9 +1,10 @@
 const express = require('express');
-const multer = require('multer');
 const session = require('express-session');
 const path = require('path');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const FfmpegCommand = require('fluent-ffmpeg');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const db = require('../database/index.js');
@@ -213,6 +214,8 @@ app.post('/update', (req, res) => {
 
 app.post('/upload', upload.single('recording'), (req, res) => {
   const { recording } = req.file;
+  const command = new FfmpegCommand(recording)
+    .input('./images/cassette-tape.jpg');
 });
 
 /**
