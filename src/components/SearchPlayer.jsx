@@ -8,54 +8,12 @@ import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCirc
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB } = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB } = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
     title = title.replace(/&quot;/g, '\"');
 
-     /**
-     * Function triggered by the fast-forward button. Mimics fast-forward by changing the playback
-     * rate and lowering the volume while the button is held-down.
-     */
-    const onForward = () => {
-        this.state.player.setPlaybackRate(2);
-        this.state.player.setVolume(50);
-    }
-    
-    /**
-     * Function that restores the volume and speed of the player when the fast-forward
-     * button is released.
-     */
-    const onStopForward = () => {
-        this.state.player.setPlaybackRate(1.0);
-        this.state.player.setVolume(100);
-    }
-
-    /**
-     * Function triggered by the rewind button mouseDown event that mimics rewind functionality.
-     * When the button is held-down the function retrieves the current time of the video then
-     * subtracts from that value to seek backwards on the player on an interval.
-     */
-    const onBackward = () => {
-        
-        let time = this.state.player.getCurrentTime();
-        this.state.player.setVolume(50);
-        this.state.interval = setInterval(() => {
-            time -= 2;
-            this.state.player.seekTo(time);
-        }, 90)
-    }
-
-    /**
-     * Function triggered by the mouseUp event of the rewind button that clears the interval, triggers 
-     * the video to play again, and restores the volume of the player.
-     */
-    const onStopBackward = () => {
-        clearInterval(this.state.interval);
-        this.state.player.playVideo();
-        this.state.player.setVolume(100);
-    }
 
     const iconStyle = {
         fontSize: '2.5rem',
@@ -95,7 +53,7 @@ const SearchPlayer = (props) => {
     return (
         <div>
             <div style={vidStyle}>
-                <YouTube videoId={selectedResult.id.videoId} onReady={onReady} />
+                <YouTube videoId={selectedResult.id.videoId} onReady={onReady} /* opts={} */ />
             </div>
             <div className="row col-12 bg-info d-flex mx-auto" style={divStyle}>
                 <div className="col-2 col-md-1" >       
