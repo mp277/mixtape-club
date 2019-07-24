@@ -33,6 +33,9 @@ class App extends React.Component {
             builderImage: { image: BlueTape, name: 'blue' },
             tapeLabel: 'Untitled',
             playing: false,
+            recording: false,
+            startSong: null,
+            stopSong: null,
             query: '',
             selectedResult: { snippet: { title: 'Search for a song' }, id: { videoId: '4D2qcbu26gs' } },
             sideA: [],
@@ -51,6 +54,8 @@ class App extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onGenerate = this.onGenerate.bind(this);
         this.onPlayVideo = this.onPlayVideo.bind(this);
+        this.onRecordVideo = this.onRecordVideo.bind(this);
+        this.onStopRecordVideo = this.onStopRecordVideo.bind(this);
         this.onPauseVideo = this.onPauseVideo.bind(this);
         this.onReady = this.onReady.bind(this);
     
@@ -129,6 +134,23 @@ class App extends React.Component {
             playing: true,
         })
     }
+    
+    onRecordVideo() {
+        let time = this.state.player.getCurrentTime();
+        this.setState({
+            startSong: time,
+            recording: true,
+        })
+    }
+
+    onStopRecordVideo() {
+        let time = this.state.player.getCurrentTime();
+        this.setState({
+            stopSong: time,
+            recording: false,
+        })
+    }
+
 
     onPauseVideo() {
         this.state.player.pauseVideo();
@@ -380,7 +402,7 @@ class App extends React.Component {
 
 
     render() {
-        const { isAuthenticated, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, isPublic } = this.state;
+        const { isAuthenticated, searchResults, playing, recording, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, isPublic } = this.state;
         return (
             <Router>
                 <div className="App">

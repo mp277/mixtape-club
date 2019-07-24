@@ -47,8 +47,8 @@ class MixtapePlayer extends React.Component {
         this.onPlayVideo = this.onPlayVideo.bind(this);
         this.onPauseVideo = this.onPauseVideo.bind(this);
         this.onForward = this.onForward.bind(this);
-        this.onStopForward = this.onStopForward.bind(this);
         this.onBackward = this.onBackward.bind(this);
+        this.onStopForward = this.onStopForward.bind(this);
         this.onStopBackward = this.onStopBackward.bind(this);
         this.onFlip = this.onFlip.bind(this);
         this.checkVid = this.checkVid.bind(this);
@@ -356,21 +356,20 @@ class MixtapePlayer extends React.Component {
         const { isPublic } = this.props;
         return(
         <div>
-        <h4 className="player-tape-label">{tapeTitle}</h4>
-        <TapeCoverImage tapeCover={tapeCover} />
-
+            <h4 className="player-tape-label">{tapeTitle}</h4>
+            <TapeCoverImage tapeCover={tapeCover} />
             <YouTube className="YouTube-vid" onReady={this.onReady} onStateChange={this.checkVid}/>
-                <div className="row col-9 col-md-6 d-flex align-items-center player-ui mx-auto" style={this.divStyle}>
-                    <div className="row col-12 col-md-12" >
-                        <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
-                        <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                        <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} />
-                        <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
-                    </div>
+            <div className="row col-9 col-md-6 d-flex align-items-center player-ui mx-auto" style={this.divStyle}>
+                <div className="row col-12 col-md-12" >
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
+            </div>
 
-                <PlayerSongList onFlip={this.onFlip} currentSong={currentSong} aSideLinks={aSideLinks} bSideLinks={bSideLinks} aSideTitles={aSideTitles} bSideTitles={bSideTitles} currentPlaylistId={currentPlaylistId} toggleLink={toggleLink} onToggleLink={this.onToggleShareLink} />
-                <UserMixtapesList isPublic={isPublic} userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
+            <PlayerSongList onFlip={this.onFlip} currentSong={currentSong} aSideLinks={aSideLinks} bSideLinks={bSideLinks} aSideTitles={aSideTitles} bSideTitles={bSideTitles} currentPlaylistId={currentPlaylistId} toggleLink={toggleLink} onToggleLink={this.onToggleShareLink} />
+            <UserMixtapesList isPublic={isPublic} userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
         </div>
         )
     };
