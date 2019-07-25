@@ -167,25 +167,15 @@ class App extends React.Component {
             playing: false
         })
 
-        const { startSong, stopSong } = this.state;
-        if (stopSong) {
-            this.setState({
-                opts: {
-                    playerVars: {
-                        start: startSong,
-                        end: stopSong,
-                    }
-                },
-            })
-        } else {
-            this.setState({
-                opts: {
-                    playerVars: {
-                        start: startSong,
-                    }
-                },
-            })
-        }
+        const { startSong } = this.state;
+        this.setState({
+            opts: {
+                playerVars: {
+                    start: startSong,
+                    end: time,
+                }
+            },
+        })
     }
 
 
@@ -298,6 +288,11 @@ class App extends React.Component {
         this.setState({
             playing: true,
             selectedResult: selected,
+            opts: {
+                playerVars: {
+                    start: 0,
+                },
+            }
         })
         setTimeout(()=>{
             this.state.player.playVideo();
@@ -319,7 +314,15 @@ class App extends React.Component {
         console.log('song', song);
         if (sideA.length < 5) {
             this.setState(prevState => {
-                return {sideA: prevState.sideA.concat(song)}
+                return {
+                    recording: false,
+                    sideA: prevState.sideA.concat(song),
+                    opts: {
+                        playerVars: {
+                            start: 0,
+                        },
+                    }
+                }
             })
         } else {
             alert('Side A is full, try adding songs to side B or remove songs to make more space.');
@@ -340,7 +343,15 @@ class App extends React.Component {
         console.log('song', song);
         if (sideB.length < 5) {
             this.setState(prevState => {
-                return { sideB: prevState.sideB.concat(song) }
+                return { 
+                    recording: false,
+                    sideB: prevState.sideB.concat(song),
+                    opts: {
+                        playerVars: {
+                            start: 0,
+                        },
+                    }
+                }
             })
         } else {
             alert('Side B is full, try adding songs to side A or remove songs to make more space.');
