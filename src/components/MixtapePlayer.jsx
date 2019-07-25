@@ -42,6 +42,7 @@ class MixtapePlayer extends React.Component {
             currentPlaylistId: '',
             toggleLink: false,
             oscillator: '',
+            stopInterval: null,
         }
         
         this.getUserPlaylists();
@@ -58,6 +59,7 @@ class MixtapePlayer extends React.Component {
         this.onToggleShareLink = this.onToggleShareLink.bind(this);
         this.onFilter = this.onFilter.bind(this);
         this.onTrackEnd = this.onTrackEnd.bind(this);
+        this.distortTape = this.distortTape.bind(this);
         
         this.divStyle = {
             borderRadius: '5px',
@@ -150,6 +152,7 @@ class MixtapePlayer extends React.Component {
         this.setState({
             oscillator: oscillator.start(),
         })
+        this.distortTape()
         console.log('filter called')
 
     }
@@ -175,7 +178,7 @@ class MixtapePlayer extends React.Component {
 
             let id = search.slice(4);
             axios.post('/mixtape-player', { id })
-                .then((response) => {
+                .then(function(response) {
                     if (response.data.bSide) {
                         const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
                         aSide.forEach((video, index) => {
@@ -264,6 +267,8 @@ class MixtapePlayer extends React.Component {
         }
         // this.setState({ lastInd });
         this.state.player.playVideo(); 
+        this.distortTape(400, this.onFilter);
+        
     }
 
     /**
@@ -276,6 +281,7 @@ class MixtapePlayer extends React.Component {
             this.setState({
                 playing: true,
             })
+            this.distortTape(400, this.onFilter);
         }
     }
 
@@ -285,8 +291,10 @@ class MixtapePlayer extends React.Component {
      */
     onPauseVideo(){
         this.state.player.pauseVideo();
+        clearInterval(this.state.stopInterval);
         this.setState({
             playing: false,
+            stopInterval: null,
         })
     }
 
@@ -552,6 +560,45 @@ class MixtapePlayer extends React.Component {
         })
     }
 
+
+    //distortTape triggers a callback on an interval based on the number of listens on a base
+    distortTape(uses, callback) {
+        function breaker() {
+            function tape() {
+                let arr = [];
+                for (let i = 0; i < uses; i++) {
+                    arr.push(Math.floor(Math.random() * 1000));
+                }
+                return arr;
+            }
+            let brokenness = tape(uses);
+            const interval = setInterval(function() {
+                if (brokenness.includes(Math.floor(Math.random() * 1000))) {
+                    callback()
+                }
+            }, 3141);
+            this.setState({ stopInterval: interval });
+        }
+        breaker();
+    }
+
+    pauseDistortion() {
+        clearInterval(this.state.stopInterval);
+        
+        this.setState({ 
+            stopInterval: null,
+            oscillator: oscillator.stop(),
+         });
+    }
+
+
+
+
+
+
+
+
+
     render (){
 
         const { aSideLinks, bSideLinks, aSideTitles, bSideTitles, tapeCover, userPlaylists, tapeTitle, currentSong, userName, currentPlaylistId, toggleLink} = this.state;
@@ -565,7 +612,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} /*onClick={this.onFilter}*/ />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.distortTape.bind(this, 400, this.onFilter)} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
