@@ -234,11 +234,33 @@ app.post('/update', (req, res) => {
   });
 });
 
-app.post('/upload', upload.single('recording'), (req, res) => {
-  const { buffer: recording } = req.file;
-  const video = new FfmpegCommand(recording)
-    .input('./images/cassette-tape.jpg')
-    .setVideoFormat('avi');
+app.post('/upload', upload.single('recording'), async (req, res) => {
+  try {
+    const { buffer: recording } = req.file;
+    const video = new FfmpegCommand(recording)
+      .input('./images/cassette-tape.jpg');
+    const result = await youtube.videos.insert(
+      {
+        part: 'id,snippet,status',
+        requestBody: {
+          snippet: {
+            title: 'User recording'
+          },
+          status: {
+            privacyStatus: 'private',
+          },
+        },
+        media: {
+          body: video,
+        },
+      },
+    );
+    const { data } = result;
+    res.status(201).json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to upload track');
+  }
 });
 
 /**
