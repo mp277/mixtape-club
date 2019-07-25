@@ -167,25 +167,15 @@ class App extends React.Component {
             playing: false
         })
 
-        const { startSong, stopSong } = this.state;
-        if (stopSong) {
-            this.setState({
-                opts: {
-                    playerVars: {
-                        start: startSong,
-                        end: stopSong,
-                    }
-                },
-            })
-        } else {
-            this.setState({
-                opts: {
-                    playerVars: {
-                        start: startSong,
-                    }
-                },
-            })
-        }
+        const { startSong } = this.state;
+        this.setState({
+            opts: {
+                playerVars: {
+                    start: startSong,
+                    end: time,
+                }
+            },
+        })
     }
 
 
@@ -298,6 +288,11 @@ class App extends React.Component {
         this.setState({
             playing: true,
             selectedResult: selected,
+            opts: {
+                playerVars: {
+                    start: 0,
+                },
+            }
         })
         setTimeout(()=>{
             this.state.player.playVideo();
@@ -322,6 +317,11 @@ class App extends React.Component {
                 return {
                     recording: false,
                     sideA: prevState.sideA.concat(song),
+                    opts: {
+                        playerVars: {
+                            start: 0,
+                        },
+                    }
                 }
             })
         } else {
@@ -346,6 +346,11 @@ class App extends React.Component {
                 return { 
                     recording: false,
                     sideB: prevState.sideB.concat(song),
+                    opts: {
+                        playerVars: {
+                            start: 0,
+                        },
+                    }
                 }
             })
         } else {
