@@ -34,9 +34,13 @@ class App extends React.Component {
             tapeLabel: 'Untitled',
             playing: false,
             recording: false,
-            startSong: null,
+            startSong: 0,
             stopSong: null,
-            opts: {},
+            opts: {
+                playerVars: {
+                    start: 0,
+                }
+            },
             query: '',
             selectedResult: { snippet: { title: 'Search for a song' }, id: { videoId: '4D2qcbu26gs' } },
             sideA: [],
@@ -164,17 +168,27 @@ class App extends React.Component {
         })
 
         const { startSong, stopSong } = this.state;
-
-        this.setState({
-            opts: {
-                playerVars: {
-                    start: startSong,
-                    end: stopSong,
-                }
-            },
-
-        })
+        if (stopSong) {
+            this.setState({
+                opts: {
+                    playerVars: {
+                        start: startSong,
+                        end: stopSong,
+                    }
+                },
+            })
+        } else {
+            this.setState({
+                opts: {
+                    playerVars: {
+                        start: startSong,
+                    }
+                },
+            })
+        }
     }
+
+
 
     onPauseVideo() {
         this.state.player.pauseVideo();
@@ -199,7 +213,7 @@ class App extends React.Component {
      * and changes the state of the user authentication client-side.
      */
 
-    logout (){
+    logout(){
         
         axios.get('/logout');
         this.setState({
@@ -299,6 +313,10 @@ class App extends React.Component {
      */
     onPassSongToSideA(song) {
         const { sideA } = this.state;
+        console.log('song no opts', song);
+
+        song.opts = this.state.opts;
+        console.log('song', song);
         if (sideA.length < 5) {
             this.setState(prevState => {
                 return {sideA: prevState.sideA.concat(song)}
@@ -316,6 +334,10 @@ class App extends React.Component {
      */
     onPassSongToSideB(song) {
         const { sideB } = this.state;
+        console.log('song no opts', song);
+
+        song.opts = this.state.opts;
+        console.log('song', song);
         if (sideB.length < 5) {
             this.setState(prevState => {
                 return { sideB: prevState.sideB.concat(song) }
@@ -356,7 +378,7 @@ class App extends React.Component {
                 tapeDeck: image,
                 tapeLabel,
                 isPublic
-        })
+            })
             .then((response) =>{
                 // handle success
                 // console.warn(response.config.data);
