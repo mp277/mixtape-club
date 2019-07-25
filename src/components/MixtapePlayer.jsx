@@ -40,6 +40,7 @@ class MixtapePlayer extends React.Component {
             userName: '',
             currentPlaylistId: '',
             toggleLink: false,
+            oscillator: '',
         }
         
         this.getUserPlaylists();
@@ -54,6 +55,7 @@ class MixtapePlayer extends React.Component {
         this.checkVid = this.checkVid.bind(this);
         this.tapeRefresh = this.tapeRefresh.bind(this);
         this.onToggleShareLink = this.onToggleShareLink.bind(this);
+        this.onFilter = this.onFilter.bind(this);
         
         this.divStyle = {
             borderRadius: '5px',
@@ -122,6 +124,20 @@ class MixtapePlayer extends React.Component {
             .catch((err) => {
                 console.error('Error searching:', err)
             })
+    }
+
+    onFilter() {
+        let audioContext = new AudioContext();
+
+        var oscillator = audioContext.createOscillator();
+        // var filter = audioContext.createBiquadFilter;
+
+        oscillator.connect(audioContext.destination);
+        this.setState({
+            oscillator: oscillator.start(),
+        })
+        console.log('filter called')
+
     }
 
     /**
@@ -205,6 +221,7 @@ class MixtapePlayer extends React.Component {
         this.setState({
             playing: true,
         })
+        // this.state.onFilter();
     }
 
     /**
@@ -363,7 +380,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.onFilter} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
