@@ -73,12 +73,12 @@ class MixtapePlayer extends React.Component {
         }
     }
 
-/**
- * Function makes get request to the server, which then retrieves
- * the users playlists from the database based on their googleId.
- * When retrieved the userPlaylists and userName are stored on the
- * state of the component.
- */
+    /**
+     * Function makes get request to the server, which then retrieves
+     * the users playlists from the database based on their googleId.
+     * When retrieved the userPlaylists and userName are stored on the
+     * state of the component.
+     */
     getUserPlaylists(){
         const { googleId } = this.state;
         const { isPublic } = this.props;
@@ -203,14 +203,14 @@ class MixtapePlayer extends React.Component {
                         aSide.forEach((video, index) => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
-                            aOpts.push(data.response[index].aSideLinks.opts || {})
+                            aOpts.push(data.response[index].aSideLinks.opts)
 
-                            console.log('video', video);
+                            console.log('video', data.response[index].aSideLinks.opts);
                         })
                         bSide.forEach((video, index) => {
                             bVideoArray.push(video.id.videoId);
                             bTitleArray.push(video.snippet.title);
-                            bSideOpts.push(data.response[index].aSideLinks.opts || {})
+                            bSideOpts.push(data.response[index].aSideLinks.opts)
 
                         })
                         this.setState({
@@ -229,8 +229,8 @@ class MixtapePlayer extends React.Component {
                         aSide.forEach(video => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
-                            aOpts.push(data.response[index].aSideLinks.opts || {})
-                            console.log('video', video);
+                            aOpts.push(data.response[index].aSideLinks.opts)
+                            console.log('video', data.response[index].aSideLinks.opts);
                         })
                         this.setState({
                             aSideLinks: aVideoArray,
@@ -257,6 +257,10 @@ class MixtapePlayer extends React.Component {
      * loadPlaylist. The video starts once the playlist loads.
      */
     onReady(event) {
+        // const { aSideLinks } = this.state;
+        // player.playVideoAt(aSideLinks.length - 1)
+        //     .then(() => player.stopVideo())
+
         this.setState({
             player: event.target,
         });
@@ -381,25 +385,22 @@ class MixtapePlayer extends React.Component {
      */
     onFlip(){
         // location.reload();
-        
-        // player.playVideoAt(lastInd);
-        // player.stopVideo();
 
         if(this.state.sidePlaying[0] === this.state.aSideLinks[0]){
-            const { sidePlaying, player, aSideOpts, bSideOpts, bSideLinks } = this.state;
+            const { sidePlaying, player, bSideOpts, bSideLinks } = this.state;
+            // player.playVideoAt(sidePlaying.length);
+            player.stopVideo();
 
             this.setState({
                 sidePlaying: bSideLinks,
             })       
 
-            player.playVideoAt(sideB.length);
-            player.stopVideo();
-
-            // this.state.player.();
             // this.state.player.loadPlaylist({playlist: sideB});
+
             let lastInd = 0;
-            sidePlaying.forEach((id, index) => {
-                if(aSideOpts[index].playerVars.end){
+            bSideLinks.forEach((id, index) => {
+                if(bSideOpts[index].playerVars.end){
+                    console.log('test!', bSideOpts)                    
                     player.cueVideoById({
                         index,
                         videoId: id,
@@ -408,6 +409,7 @@ class MixtapePlayer extends React.Component {
                     })
                     lastInd = index;
                 } else {
+                    console.log('test!', bSideOpts)
                     player.cueVideoById({
                         index,
                         videoId: id,
@@ -419,19 +421,20 @@ class MixtapePlayer extends React.Component {
             // this.setState({ lastInd })
 
         } else if(this.state.sidePlaying[0] === this.state.bSideLinks[0]){
-            const { sidePlaying, player, aSideOpts, bSideOpts, aSideLinks } = this.state;
+            const { sidePlaying, player, aSideOpts, aSideLinks, bSideLinks } = this.state;
+            
+            // player.playVideoAt(sidePlaying.length);
+            player.stopVideo();
 
             this.setState({
                 sidePlaying: aSideLinks,
             })
 
-            player.playVideoAt(sideA.length);
-            player.stopVideo();
-
             // this.state.player.loadPlaylist({ playlist: sideA });
             let lastInd = 0;
             sidePlaying.forEach((id, index) => {
                 if(aSideOpts[index].playerVars.end){
+                    console.log('test!', aSideOpts)
                     player.cueVideoById({
                         index,
                         videoId: id,
@@ -440,6 +443,7 @@ class MixtapePlayer extends React.Component {
                     })
                     lastInd = index;
                 } else {
+                    console.log('test!', aSideOpts)
                     player.cueVideoById({
                         index,
                         videoId: id,
@@ -457,9 +461,9 @@ class MixtapePlayer extends React.Component {
      * matching the id of the clicked element and the id of the playlist.
      */
     tapeRefresh(event){
-        const { aSideLinks, player } = this.state;
+        const { sidePlaying, player } = this.state;
         // location.reload();
-        player.playVideoAt(aSideLinks.length);
+        // player.playVideoAt(sidePlaying.length)
         player.stopVideo();
         
         this.state.userPlaylists.forEach((playlist) => {
@@ -496,24 +500,24 @@ class MixtapePlayer extends React.Component {
                 // this.state.player.loadPlaylist({ playlist: aVideoArray });
                 const { sidePlaying, player, aSideOpts } = this.state;
                 // let lastInd = 0;
-                sidePlaying.forEach((id, index) => {
-                    if(aSideOpts[index].playerVars.end){
-                        // console.log('timestamp', aSideOpts[index].playerVars.start)
+                aVideoArray.forEach((id, index) => {
+                    if(aOpts[index].playerVars.end){
+                        console.log('timestamp', aOpts[index].playerVars.start)
 
                         player.cueVideoById({
                             index,
                             videoId: id,
-                            startSeconds: aSideOpts[index].playerVars.start,
-                            endSeconds: aSideOpts[index].playerVars.end,
+                            startSeconds: aOpts[index].playerVars.start,
+                            endSeconds: aOpts[index].playerVars.end,
                         })
                         // lastInd = index;
                     } else {
-                        // console.log('timestamp', aSideOpts[index].playerVars.start)
+                        console.log('timestamp', aOpts[index].playerVars.start)
 
                         player.cueVideoById({
                             index,
                             videoId: id,
-                            startSeconds: aSideOpts[index].playerVars.start,
+                            startSeconds: aOpts[index].playerVars.start,
                         })
                         // lastInd = index;
                     }
@@ -521,8 +525,8 @@ class MixtapePlayer extends React.Component {
                 // this.setState({ lastInd });
                 player.playVideo();  
             }
-    })
-}
+        })
+    }
     
 
     /**
