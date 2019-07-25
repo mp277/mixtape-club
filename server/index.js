@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -237,26 +238,50 @@ app.post('/update', (req, res) => {
 app.post('/upload', upload.single('recording'), async (req, res) => {
   try {
     const { buffer: recording } = req.file;
-    const video = new FfmpegCommand(recording)
-      .input('./images/cassette-tape.jpg');
-    const result = await youtube.videos.insert(
-      {
-        part: 'id,snippet,status',
-        requestBody: {
-          snippet: {
-            title: 'User recording'
-          },
-          status: {
-            privacyStatus: 'private',
-          },
-        },
-        media: {
-          body: video,
-        },
-      },
-    );
-    const { data } = result;
-    res.status(201).json(data);
+    // const video = new FfmpegCommand()
+    //   .input(recording)
+    //   .input('./images/cassette-tape.jpg');
+    fs.open('audio.ogg', 'w+', (err, fd) => {
+      if (err) {
+        res.status(500).send('Could not save recording');
+      } else {
+        fs.writeFile(fd, recording, (err) => {
+          if (err) {
+            res.status(500).send('Could not save recording');
+          } else {
+            fs.readFile(fd, (err, result) => {
+              if (err) {
+                res.status(500).send('Could not save recording');
+              }
+              fs.close(fd, (err) => {
+                if (err) {
+                  res.status(500).send('Could not save recording');
+                }
+                res.status(201).send(result);
+              });
+            });
+          }
+        });
+      }
+    });
+    // const result = await youtube.videos.insert(
+    //   {
+    //     part: 'id,snippet,status',
+    //     requestBody: {
+    //       snippet: {
+    //         title: 'User recording'
+    //       },
+    //       status: {
+    //         privacyStatus: 'private',
+    //       },
+    //     },
+    //     media: {
+    //       body: video,
+    //     },
+    //   },
+    // );
+    // const { data } = result;
+    // res.status(201).json(data);
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to upload track');
