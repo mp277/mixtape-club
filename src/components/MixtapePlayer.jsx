@@ -369,7 +369,7 @@ class MixtapePlayer extends React.Component {
      * as urlId so that the currently playing song will be highlighted in the list of songs.
      */
     checkVid(event){
-        if(event.data === 1){
+        if(event.getPlayerState() === 1){
             let urlId = this.state.player.getVideoUrl();
             urlId = urlId.replace('https://www.youtube.com/watch?v=','')
             
@@ -462,7 +462,6 @@ class MixtapePlayer extends React.Component {
                 } else {
                     console.log('test!', aSideOpts)
                     player.loadVideoById({
-                        index,
                         videoId: aSideLinks[0],
                         startSeconds: aSideOpts[index].playerVars.start,
                     })
