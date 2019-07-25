@@ -36,7 +36,11 @@ class App extends React.Component {
             recording: false,
             startSong: 0,
             stopSong: null,
-            opts: {},
+            opts: {
+                playerVars: {
+                    start: 0,
+                }
+            },
             query: '',
             selectedResult: { snippet: { title: 'Search for a song' }, id: { videoId: '4D2qcbu26gs' } },
             sideA: [],
@@ -183,6 +187,8 @@ class App extends React.Component {
             })
         }
     }
+
+
 
     onPauseVideo() {
         this.state.player.pauseVideo();
