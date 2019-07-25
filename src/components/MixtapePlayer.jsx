@@ -108,7 +108,7 @@ class MixtapePlayer extends React.Component {
                     userName: data.displayName || 'Public',
                 })
                 if(!this.state.currentPlaylistId){
-                    aSide.reverse().forEach(video => {
+                    aSide.forEach(video => {
                         aVideoArray.push(video.id.videoId);
                         aTitleArray.push(video.snippet.title);
                         aOpts.push(video.opts)
@@ -117,7 +117,7 @@ class MixtapePlayer extends React.Component {
                         // console.log('video opts!!!', video.opts);
 
                     })
-                    bSide.reverse().forEach(video => {
+                    bSide.forEach(video => {
                         bVideoArray.push(video.id.videoId);
                         bTitleArray.push(video.snippet.title);
                         bSideOpt.push(video.opts)
@@ -134,27 +134,7 @@ class MixtapePlayer extends React.Component {
                         sidePlaying: aVideoArray,
                         tapeTitle: data.response[0].tapeLabel
                     })
-                    // this.state.player.loadPlaylist({ playlist: this.state.sidePlaying });
-                    // if (this.state.player) {
-                    // const { sidePlaying, player, aSideOpts, bSideOpts } = this.state;
-                    // const opts = sidePlaying === aVideoArray ? aSideOpts : bSideOpts;
-                    // sidePlaying.forEach((id, index) => {
-                    //     console.log('opts', opts)
-                    //     if(opts[index].playerVars.end){
-                    //         player.cueVideoById({
-                    //             videoId: id,
-                    //             startSeconds: aSideOpts[index].playerVars.start,
-                    //             endSeconds: aSideOpts[index].playerVars.end,
-                    //         })
-                    //     } else {
-                    //         player.cueVideoById({
-                    //             videoId: id,
-                    //             startSeconds: aSideOpts[index].playerVars.start,
-                    //         })
-                    //     }
-                    // })
-                    // player.playVideo(); 
-                    // }
+
                 }
             })
             .catch((err) => {
@@ -200,14 +180,14 @@ class MixtapePlayer extends React.Component {
                 .then((response) => {
                     if (response.data.bSide) {
                         const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
-                        aSide.reverse().forEach((video, index) => {
+                        aSide.forEach((video, index) => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
 
                             console.log('video', data.response[index].aSideLinks.opts);
                         })
-                        bSide.reverse().forEach((video, index) => {
+                        bSide.forEach((video, index) => {
                             bVideoArray.push(video.id.videoId);
                             bTitleArray.push(video.snippet.title);
                             bSideOpts.push(data.response[index].aSideLinks.opts)
@@ -226,7 +206,7 @@ class MixtapePlayer extends React.Component {
                         })
                     } else {
                         const { aSide, tapeDeck, tapeLabel, userId } = response.data;
-                        aSide.reverse().forEach(video => {
+                        aSide.forEach(video => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
