@@ -111,11 +111,7 @@ class MixtapePlayer extends React.Component {
                     aSide.forEach(video => {
                         aVideoArray.push(video.id.videoId);
                         aTitleArray.push(video.snippet.title);
-                        aOpts.push(video.opts)
-                        // console.log('attempt', video.opts)
-                        // console.log('video!!!', video);
-                        // console.log('video opts!!!', video.opts);
-
+                        aOpts.push(video.opts);
                     })
                     bSide.forEach(video => {
                         bVideoArray.push(video.id.videoId);
@@ -183,14 +179,14 @@ class MixtapePlayer extends React.Component {
                         aSide.forEach((video, index) => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
-                            aOpts.push(data.response[index].aSideLinks.opts)
+                            aOpts.push(data.response[index].aSideLinks.opts);
 
                             console.log('video', data.response[index].aSideLinks.opts);
                         })
                         bSide.forEach((video, index) => {
                             bVideoArray.push(video.id.videoId);
                             bTitleArray.push(video.snippet.title);
-                            bSideOpts.push(data.response[index].aSideLinks.opts)
+                            bSideOpts.push(data.response[index].aSideLinks.opts);
 
                         })
                         this.setState({
@@ -278,7 +274,7 @@ class MixtapePlayer extends React.Component {
      *  The playVideo function is a built-in function of the YouTube Player API.
      */
     onPlayVideo() {
-        if (this.state.player.getPlayerState() === 5){
+        if (this.state.player && this.state.player.getPlayerState() === 5){
             this.state.player.playVideo();
             this.setState({
                 playing: true,
@@ -399,6 +395,7 @@ class MixtapePlayer extends React.Component {
                 }
             })
             // this.setState({ lastInd })
+            player.playVideo();
 
         } else if(this.state.sidePlaying[0] === this.state.bSideLinks[0]){
             const { sidePlaying, player, aSideOpts, aSideLinks, bSideLinks } = this.state;
@@ -433,6 +430,7 @@ class MixtapePlayer extends React.Component {
                 }
             })
             // this.setState({ lastInd });
+            player.playVideo();
         }      
     }
     
