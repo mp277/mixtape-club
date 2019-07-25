@@ -27,7 +27,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            searchResults: [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' }}],
+            searchResults: [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' } }],
             player: null,
             tapeImages: [{ image: LisaFrankenstein, name: 'Lisa Frankenstein' }, { image: GreenTape, name: 'green' }, { image: OrangeTape, name: 'orange' }, { image: BlueTape, name: 'blue' }, { image: RedTape, name: 'red' }, { image: PinkTape, name: 'pink' }],
             builderImage: { image: BlueTape, name: 'blue' },
@@ -64,7 +64,7 @@ class App extends React.Component {
         this.onStopRecordVideo = this.onStopRecordVideo.bind(this);
         this.onPauseVideo = this.onPauseVideo.bind(this);
         this.onReady = this.onReady.bind(this);
-    
+
         this.onForward = this.onForward.bind(this);
         this.onBackward = this.onBackward.bind(this);
         this.onStopForward = this.onStopForward.bind(this);
@@ -80,7 +80,7 @@ class App extends React.Component {
         this.logout = this.logout.bind(this);
         this.onMakePublic = this.onMakePublic.bind(this);
         this.authenticateUser = this.authenticateUser.bind(this);
-        
+
         this.startRecordUser = this.startRecordUser.bind(this);
         this.stopRecordUser = this.stopRecordUser.bind(this);
     }
@@ -92,38 +92,38 @@ class App extends React.Component {
      * Google Strategy. Maintains record of authentication
      * on the state.
      */
-    authenticateUser(){
+    authenticateUser() {
         axios.get('/user/')
-        .then((response)=> {
-            if(response.data.verified){
-                this.setState({
-                    isAuthenticated: true,
-                    googleId: response.data.id
-                })
-            }
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
+            .then((response) => {
+                if (response.data.verified) {
+                    this.setState({
+                        isAuthenticated: true,
+                        googleId: response.data.id
+                    })
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 
     /**
      * When component mounts, info about user is retrieved from
      * server using passport.
      */
-    componentDidMount(){
+    componentDidMount() {
         this.authenticateUser();
-        const {googleId} = this.state;
-        
+        const { googleId } = this.state;
+
         axios.get('/getUser', {
             googleId
         })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => {
-          console.error('Error searching:', err)
-        })
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((err) => {
+                console.error('Error searching:', err)
+            })
         console.log('location', location);
     }
 
@@ -131,7 +131,7 @@ class App extends React.Component {
      * Function maintains the query value of the input field from
      * Search.jsx as it changes.
      */
-    onChange(event){
+    onChange(event) {
         this.setState({
             query: event.target.value,
         })
@@ -148,7 +148,7 @@ class App extends React.Component {
             playing: true,
         })
     }
-    
+
     onRecordVideo() {
         let time = this.state.player.getCurrentTime();
         console.log('time', time);
@@ -203,56 +203,56 @@ class App extends React.Component {
      * and changes the state of the user authentication client-side.
      */
 
-    logout(){
-        
+    logout() {
+
         axios.get('/logout');
         this.setState({
             isAuthenticated: false,
         })
     }
-  
+
     /**
      * Function makes call to server with the query string. The server
      * then makes a call to the YouTube API and returns the results.
      * Top results are added to the state and the first result is assigned
      * to selectedResult and loaded into the SearchPlayer.
      */
-    
-    onSearch(){
+
+    onSearch() {
         let query = this.state.query;
-        axios.post('/search', {query})
-        .then((response)=>{
-            this.setState({
-                searchResults : response.data.items,
-                selectedResult : response.data.items[0],
+        axios.post('/search', { query })
+            .then((response) => {
+                this.setState({
+                    searchResults: response.data.items,
+                    selectedResult: response.data.items[0],
+                })
             })
-        })
-        .catch((err)=> {
-            console.error('Error searching:', err)
-        })
+            .catch((err) => {
+                console.error('Error searching:', err)
+            })
     }
 
-    onGenerate(){
+    onGenerate() {
         let query = this.state.query;
-        axios.post('/search', {query})
-        .then((response) => {
-            const tracks = response.data.items;
-            tracks.forEach(track => {
-                let title = track.snippet.title.replace(/&amp;/g, '&');
-                title = title.replace(/&#39;/g, '\'');
-                title = title.replace(/&quot;/g, '\"');
-                track.snippet.title = title;
+        axios.post('/search', { query })
+            .then((response) => {
+                const tracks = response.data.items;
+                tracks.forEach(track => {
+                    let title = track.snippet.title.replace(/&amp;/g, '&');
+                    title = title.replace(/&#39;/g, '\'');
+                    title = title.replace(/&quot;/g, '\"');
+                    track.snippet.title = title;
+                });
+                const sideA = tracks.slice(0, 5);
+                const sideB = tracks.slice(5);
+                this.setState({
+                    sideA,
+                    sideB,
+                });
+            })
+            .catch((err) => {
+                console.error('Error searching:', err);
             });
-            const sideA = tracks.slice(0, 5);
-            const sideB = tracks.slice(5);
-            this.setState({
-                sideA,
-                sideB,
-            });
-        })
-        .catch((err) => {
-            console.error('Error searching:', err);
-        });
     }
 
     /**
@@ -294,9 +294,9 @@ class App extends React.Component {
                 },
             }
         })
-        setTimeout(()=>{
+        setTimeout(() => {
             this.state.player.playVideo();
-        },0);
+        }, 0);
     }
 
 
@@ -343,7 +343,7 @@ class App extends React.Component {
         console.log('song', song);
         if (sideB.length < 5) {
             this.setState(prevState => {
-                return { 
+                return {
                     recording: false,
                     sideB: prevState.sideB.concat(song),
                     opts: {
@@ -380,39 +380,39 @@ class App extends React.Component {
      * with friends.
      */
     onSavePlaylist() {
-        const {googleId, sideA, sideB, builderImage, tapeLabel, isPublic} = this.state;
-        const {image, name} = builderImage
+        const { googleId, sideA, sideB, builderImage, tapeLabel, isPublic } = this.state;
+        const { image, name } = builderImage
         axios.post('/store', {
-                userId: googleId,
-                aSideLinks: sideA,
-                bSideLinks: sideB,
-                tapeDeck: image,
-                tapeLabel,
-                isPublic
-            })
-            .then((response) =>{
+            userId: googleId,
+            aSideLinks: sideA,
+            bSideLinks: sideB,
+            tapeDeck: image,
+            tapeLabel,
+            isPublic
+        })
+            .then((response) => {
                 // handle success
                 // console.warn(response.config.data);
                 let newId = JSON.parse(response.config.data);
                 // const {userId} = response.config.data;
                 let key = JSON.stringify(newId.aSideLinks);
-               
+
                 axios.post('/getlink', {
                     key
                 })
-                .then((response) => {
-                   
-                    
-                    this.setState({
-                        queryParam: response.data.id
+                    .then((response) => {
+
+
+                        this.setState({
+                            queryParam: response.data.id
+                        })
+                        location.assign(`/mixtape-player?id=${response.data.id}`)
                     })
-                    location.assign(`/mixtape-player?id=${response.data.id}`)
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             })
-            .catch((error) =>{
+            .catch((error) => {
                 // handle error
                 console.log(error);
             })
@@ -440,7 +440,7 @@ class App extends React.Component {
     onDeleteSong(event) {
         const index = event.currentTarget.id[1];
         const side = event.currentTarget.id[0];
-        
+
         if (side === 'A') {
             this.state.sideA.splice(index, 1);
             const newSideA = this.state.sideA;
@@ -457,15 +457,15 @@ class App extends React.Component {
 
     }
 
-     /**
-     * Function triggered by the fast-forward button. Mimics fast-forward by changing the playback
-     * rate and lowering the volume while the button is held-down.
-     */
+    /**
+    * Function triggered by the fast-forward button. Mimics fast-forward by changing the playback
+    * rate and lowering the volume while the button is held-down.
+    */
     onForward() {
         this.state.player.setPlaybackRate(2);
         this.state.player.setVolume(50);
     }
-    
+
     /**
      * Function that restores the volume and speed of the player when the fast-forward
      * button is released.
