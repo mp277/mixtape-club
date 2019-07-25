@@ -108,7 +108,7 @@ class MixtapePlayer extends React.Component {
                     userName: data.displayName || 'Public',
                 })
                 if(!this.state.currentPlaylistId){
-                    aSide.forEach(video => {
+                    aSide.reverse().forEach(video => {
                         aVideoArray.push(video.id.videoId);
                         aTitleArray.push(video.snippet.title);
                         aOpts.push(video.opts)
@@ -117,7 +117,7 @@ class MixtapePlayer extends React.Component {
                         // console.log('video opts!!!', video.opts);
 
                     })
-                    bSide.forEach(video => {
+                    bSide.reverse().forEach(video => {
                         bVideoArray.push(video.id.videoId);
                         bTitleArray.push(video.snippet.title);
                         bSideOpt.push(video.opts)
@@ -200,14 +200,14 @@ class MixtapePlayer extends React.Component {
                 .then((response) => {
                     if (response.data.bSide) {
                         const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
-                        aSide.forEach((video, index) => {
+                        aSide.reverse().forEach((video, index) => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
 
                             console.log('video', data.response[index].aSideLinks.opts);
                         })
-                        bSide.forEach((video, index) => {
+                        bSide.reverse().forEach((video, index) => {
                             bVideoArray.push(video.id.videoId);
                             bTitleArray.push(video.snippet.title);
                             bSideOpts.push(data.response[index].aSideLinks.opts)
@@ -226,7 +226,7 @@ class MixtapePlayer extends React.Component {
                         })
                     } else {
                         const { aSide, tapeDeck, tapeLabel, userId } = response.data;
-                        aSide.forEach(video => {
+                        aSide.reverse().forEach(video => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
@@ -267,7 +267,7 @@ class MixtapePlayer extends React.Component {
         // this.state.player.loadPlaylist({playlist: this.state.sidePlaying});
         const { sidePlaying, player, aSideOpts } = this.state;
         let lastInd = 0;
-        sidePlaying.forEach((id, index) => {
+        sidePlaying.reverse().forEach((id, index) => {
             if( aSideOpts[index].playerVars.end ){
                 console.log('!!!2', aSideOpts[index].playerVars.end);
                 player.cueVideoById({
@@ -398,7 +398,7 @@ class MixtapePlayer extends React.Component {
             // this.state.player.loadPlaylist({playlist: sideB});
 
             let lastInd = 0;
-            bSideLinks.forEach((id, index) => {
+            bSideLinks.reverse().forEach((id, index) => {
                 if(bSideOpts[index].playerVars.end){
                     console.log('test!', bSideOpts)                    
                     player.cueVideoById({
@@ -432,7 +432,7 @@ class MixtapePlayer extends React.Component {
 
             // this.state.player.loadPlaylist({ playlist: sideA });
             let lastInd = 0;
-            sidePlaying.forEach((id, index) => {
+            sidePlaying.reverse().forEach((id, index) => {
                 if(aSideOpts[index].playerVars.end){
                     console.log('test!', aSideOpts)
                     player.cueVideoById({
@@ -500,7 +500,7 @@ class MixtapePlayer extends React.Component {
                 // this.state.player.loadPlaylist({ playlist: aVideoArray });
                 const { sidePlaying, player, aSideOpts } = this.state;
                 // let lastInd = 0;
-                aVideoArray.forEach((id, index) => {
+                aVideoArray.reverse().forEach((id, index) => {
                     if(aOpts[index].playerVars.end){
                         console.log('timestamp', aOpts[index].playerVars.start)
 
@@ -552,7 +552,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.onFilter} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} /*onClick={this.onFilter}*/ />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
