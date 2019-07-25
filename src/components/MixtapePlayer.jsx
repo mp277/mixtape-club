@@ -134,27 +134,7 @@ class MixtapePlayer extends React.Component {
                         sidePlaying: aVideoArray,
                         tapeTitle: data.response[0].tapeLabel
                     })
-                    // this.state.player.loadPlaylist({ playlist: this.state.sidePlaying });
-                    // if (this.state.player) {
-                    // const { sidePlaying, player, aSideOpts, bSideOpts } = this.state;
-                    // const opts = sidePlaying === aVideoArray ? aSideOpts : bSideOpts;
-                    // sidePlaying.forEach((id, index) => {
-                    //     console.log('opts', opts)
-                    //     if(opts[index].playerVars.end){
-                    //         player.cueVideoById({
-                    //             videoId: id,
-                    //             startSeconds: aSideOpts[index].playerVars.start,
-                    //             endSeconds: aSideOpts[index].playerVars.end,
-                    //         })
-                    //     } else {
-                    //         player.cueVideoById({
-                    //             videoId: id,
-                    //             startSeconds: aSideOpts[index].playerVars.start,
-                    //         })
-                    //     }
-                    // })
-                    // player.playVideo(); 
-                    // }
+
                 }
             })
             .catch((err) => {
@@ -267,7 +247,7 @@ class MixtapePlayer extends React.Component {
         // this.state.player.loadPlaylist({playlist: this.state.sidePlaying});
         const { sidePlaying, player, aSideOpts } = this.state;
         let lastInd = 0;
-        sidePlaying.forEach((id, index) => {
+        sidePlaying.reverse().forEach((id, index) => {
             if( aSideOpts[index].playerVars.end ){
                 console.log('!!!2', aSideOpts[index].playerVars.end);
                 player.cueVideoById({
@@ -398,7 +378,7 @@ class MixtapePlayer extends React.Component {
             // this.state.player.loadPlaylist({playlist: sideB});
 
             let lastInd = 0;
-            bSideLinks.forEach((id, index) => {
+            bSideLinks.reverse().forEach((id, index) => {
                 if(bSideOpts[index].playerVars.end){
                     console.log('test!', bSideOpts)                    
                     player.cueVideoById({
@@ -432,7 +412,7 @@ class MixtapePlayer extends React.Component {
 
             // this.state.player.loadPlaylist({ playlist: sideA });
             let lastInd = 0;
-            sidePlaying.forEach((id, index) => {
+            sidePlaying.reverse().forEach((id, index) => {
                 if(aSideOpts[index].playerVars.end){
                     console.log('test!', aSideOpts)
                     player.cueVideoById({
@@ -500,7 +480,7 @@ class MixtapePlayer extends React.Component {
                 // this.state.player.loadPlaylist({ playlist: aVideoArray });
                 const { sidePlaying, player, aSideOpts } = this.state;
                 // let lastInd = 0;
-                aVideoArray.forEach((id, index) => {
+                aVideoArray.reverse().forEach((id, index) => {
                     if(aOpts[index].playerVars.end){
                         console.log('timestamp', aOpts[index].playerVars.start)
 
@@ -552,7 +532,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.onFilter} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} /*onClick={this.onFilter}*/ />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
