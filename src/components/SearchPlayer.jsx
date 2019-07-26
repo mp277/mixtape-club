@@ -8,12 +8,11 @@ import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCirc
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser, } = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser} = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
     title = title.replace(/&quot;/g, '\"');
-
 
     const iconStyle = {
         fontSize: '2.5rem',
@@ -54,6 +53,10 @@ const SearchPlayer = (props) => {
         mediaRecord.onstop = () => {
             const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
             stopRecordUser(blob);
+            const audio = document.getElementById('user-recording');
+            const audioURL = window.URL.createObjectURL(blob);
+            audio.setAttribute('controls', '');
+            audio.src = audioURL;
         }
         mediaRecord.stop();
     }
@@ -73,8 +76,6 @@ const SearchPlayer = (props) => {
                 }
 
                 const stop = document.querySelector('#stop-record-user');
-                console.log(stop);
-                // stop.onclick = initiateStopRecordUser(chunks, mediaRecord);
                 stop.onclick = initiateStopRecordUser.bind(stop, chunks, mediaRecord);
             })
             .catch((err) => {
@@ -89,6 +90,7 @@ const SearchPlayer = (props) => {
     return (
         <div>
             <div style={vidStyle}>
+                <audio id="user-recording" controls></audio>
                 <YouTube videoId={selectedResult.id.videoId} onReady={onReady} opts={opts} />
             </div>
             <div className="row col-12 bg-info d-flex mx-auto" style={divStyle}>

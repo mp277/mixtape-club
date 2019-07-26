@@ -465,7 +465,7 @@ class MixtapePlayer extends React.Component {
                 player.loadVideoById({
                     videoId: bSideLinks[currentTrack],
                     startSeconds: bSideOpts[currentTrack].playerVars.start,
-                    endSeconds: bSideOpts[currentTrack].playerVars.end,
+                    endSeconds: bSideOpts[currentTrack].playerVars.end, 
                 })
             }
         }
