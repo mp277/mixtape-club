@@ -322,6 +322,8 @@ class App extends React.Component {
         const { sideA } = this.state;
 
         song.opts = this.state.opts;
+        console.log('song', song);
+        
         if (sideA.length < 5) {
             this.setState(prevState => {
                 return {
