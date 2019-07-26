@@ -421,6 +421,26 @@ app.post('/search', (req, res) => {
     });
 });
 
+
+
+
+//get handler to encode sound files into an array buffer for the client
+
+// const soundHandle = new XMLHttpRequest.response;
+
+app.get('soundFile/:file', (req, res) => {
+  const { file } = req.params;
+  fs.readFile(`./sound/${file}.mp3`, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.send(500);
+    } else {
+      res.status(200).send(data);
+    }
+  });
+});
+
+
 const PORT = 3000;
 
 app.listen(PORT, () => console.log(`Your app is sparkling on port ${PORT}!`));
