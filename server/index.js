@@ -1,11 +1,16 @@
+const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const FfmpegCommand = require('fluent-ffmpeg');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const { google } = require('googleapis');
 const db = require('../database/index.js');
+const client = require('./client.js');
 
 /**
  * express required to aid in in handeling request made to server
@@ -13,9 +18,13 @@ const db = require('../database/index.js');
  * path required to aid in redirects to avoid landing on incorrect endpoint
  * axios required to send requests
  * bodyParse required to retrieve information from body while avoiding chunks
+ * multer required to aid in parsing multiform media, such as audio recordings
+ * FfmpegCommand required to convert audio to video
  * passport required in retrieving info from google authentication
  * GoogleStrategy required to retireve user's google infromation to store users
+ * google required to upload videos to youtube
  * db required as a path to our database commands
+ * client required to authenticate youtube upload requests
  */
 
 require('dotenv').config();
@@ -25,6 +34,27 @@ require('dotenv').config();
  */
 
 const app = express();
+
+/**
+ * upload rename to aid in obtaining audiofiles
+ */
+
+const upload = multer();
+
+/**
+ * Initialize youtube API library
+ */
+
+const youtube = google.youtube({
+  version: 'v3',
+  auth: client.oAuth2Client,
+});
+
+
+const scopes = [
+  'https://www.googleapis.com/auth/youtube.upload',
+  'https://www.googleapis.com/auth/youtube',
+];
 
 /**
  * middleware assigned to app to aid in any incoming requests
@@ -201,6 +231,81 @@ app.post('/update', (req, res) => {
     console.log(response);
     res.end('Playlist Updated');
   });
+});
+
+/**
+ * Post request handler to save audio file to disk. There is youtube upload
+ * functionality in the comments for later expansion
+ */
+
+app.post('/upload', upload.single('recording'), async (req, res) => {
+  try {
+    const { buffer: recording } = req.file;
+    const { id } = req.user;
+    fs.open(`server/audio/${id}.ogg`, 'w+', (err, fd) => {
+      if (err) {
+        res.status(500).send('Could not save recording');
+      } else {
+        fs.writeFile(fd, recording, (err) => {
+          if (err) {
+            res.status(500).send('Could not save recording');
+          } else {
+            fs.readFile(fd, (err, result) => {
+              if (err) {
+                res.status(500).send('Could not save recording');
+              }
+              fs.close(fd, (err) => {
+                if (err) {
+                  res.status(500).send('Could not save recording');
+                }
+                res.status(201).send(id);
+              });
+            });
+          }
+        });
+      }
+    });
+    // const outStream = fs.createWriteStream('../testVideo.mp4');
+    // const video = new FfmpegCommand(buffer)
+    //   .format('ogg')
+    //   .input('./server/images/cassette-tape.jpg')
+    //   .loop()
+    //   .output('outputfile.mp4')
+    //   .audioCodec('aac')
+    //   .videoCodec('libx264')
+    //   .on('error', (err, stdout, stderr) => {
+    //     console.error(`Failed to process video: ${err}`);
+    //   })
+    //   .pipe(outStream, { end: true });
+    // client.authenticate(scopes)
+    //   .then(async () => {
+    //     const result = await youtube.videos.insert(
+    //       {
+    //         part: 'id,snippet,status',
+    //         requestBody: {
+    //           snippet: {
+    //             title: 'User recording',
+    //           },
+    //           status: {
+    //             privacyStatus: 'private',
+    //           },
+    //         },
+    //         media: {
+    //           body: video,
+    //         },
+    //       },
+    //     );
+    //     const { data } = result;
+    //     res.status(201).json(data);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     res.status(500).send('Failed to upload track');
+    //   });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to upload track');
+  }
 });
 
 /**

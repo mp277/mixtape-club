@@ -54,6 +54,7 @@ class App extends React.Component {
             queryParam: "",
             isPublic: false,
             recordUser: false,
+            userRecording: null,
         }
 
         this.onSearch = this.onSearch.bind(this);
@@ -510,9 +511,19 @@ class App extends React.Component {
         this.setState({
             recordUser: false,
         });
-        axios.post('/upload', blob, {
+        const formData = new FormData();
+        formData.append('name', 'recording');
+        formData.append('recording', blob);
+        axios.post('/upload', formData, {
             'Content-Type': 'multipart/form-data',
         })
+            .then(result => {
+                console.log(result);
+                this.setState({
+                    userRecording: result.data,
+                });
+            })
+            .catch(err => console.log(err));
     }
 
 
