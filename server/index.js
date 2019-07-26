@@ -10,6 +10,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const { google } = require('googleapis');
 const db = require('../database/index.js');
+const client = require('./client.js');
 
 /**
  * express required to aid in in handeling request made to server
@@ -23,6 +24,7 @@ const db = require('../database/index.js');
  * GoogleStrategy required to retireve user's google infromation to store users
  * google required to upload videos to youtube
  * db required as a path to our database commands
+ * client required to authenticate youtube upload requests
  */
 
 require('dotenv').config();
@@ -40,23 +42,19 @@ const app = express();
 const upload = multer();
 
 /**
- * create an oAuth client for video uploads
- */
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  'http://localhost:3000/mixtape-player',
-);
-
-/**
  * Initialize youtube API library
  */
 
 const youtube = google.youtube({
   version: 'v3',
-  auth: oauth2Client,
+  auth: client.oAuth2Client,
 });
+
+
+const scopes = [
+  'https://www.googleapis.com/auth/youtube.upload',
+  'https://www.googleapis.com/auth/youtube',
+];
 
 /**
  * middleware assigned to app to aid in any incoming requests
@@ -238,50 +236,52 @@ app.post('/update', (req, res) => {
 app.post('/upload', upload.single('recording'), async (req, res) => {
   try {
     const { buffer: recording } = req.file;
-    // const video = new FfmpegCommand()
-    //   .input(recording)
-    //   .input('./images/cassette-tape.jpg');
-    fs.open('audio.ogg', 'w+', (err, fd) => {
-      if (err) {
-        res.status(500).send('Could not save recording');
-      } else {
-        fs.writeFile(fd, recording, (err) => {
-          if (err) {
-            res.status(500).send('Could not save recording');
-          } else {
-            fs.readFile(fd, (err, result) => {
-              if (err) {
-                res.status(500).send('Could not save recording');
-              }
-              fs.close(fd, (err) => {
-                if (err) {
-                  res.status(500).send('Could not save recording');
-                }
-                res.status(201).send(result);
-              });
-            });
-          }
-        });
-      }
-    });
-    // const result = await youtube.videos.insert(
-    //   {
-    //     part: 'id,snippet,status',
-    //     requestBody: {
-    //       snippet: {
-    //         title: 'User recording'
-    //       },
-    //       status: {
-    //         privacyStatus: 'private',
-    //       },
-    //     },
-    //     media: {
-    //       body: video,
-    //     },
-    //   },
-    // );
-    // const { data } = result;
-    // res.status(201).json(data);
+    // fs.open('audio.ogg', 'w+', (err, fd) => {
+    //   if (err) {
+    //     res.status(500).send('Could not save recording');
+    //   } else {
+    //     fs.writeFile(fd, recording, (err) => {
+    //       if (err) {
+    //         res.status(500).send('Could not save recording');
+    //       } else {
+    //         fs.readFile(fd, (err, result) => {
+    //           if (err) {
+    //             res.status(500).send('Could not save recording');
+    //           }
+    //           fs.close(fd, (err) => {
+    //             if (err) {
+    //               res.status(500).send('Could not save recording');
+    //             }
+    //             res.status(201).send(result);
+    //           });
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
+    const video = new FfmpegCommand(recording)
+      .input('./images/cassette-tape.jpg');
+    client.authenticate(scopes)
+      .then(async () => {
+        const result = await youtube.videos.insert(
+          {
+            part: 'id,snippet,status',
+            requestBody: {
+              snippet: {
+                title: 'User recording',
+              },
+              status: {
+                privacyStatus: 'private',
+              },
+            },
+            media: {
+              body: video,
+            },
+          },
+        );
+        const { data } = result;
+        res.status(201).json(data);
+      });
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to upload track');
