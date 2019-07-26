@@ -233,55 +233,75 @@ app.post('/update', (req, res) => {
   });
 });
 
+/**
+ * Post request handler to save audio file to disk. There is youtube upload
+ * functionality in the comments for later expansion
+ */
+
 app.post('/upload', upload.single('recording'), async (req, res) => {
   try {
     const { buffer: recording } = req.file;
-    // fs.open('audio.ogg', 'w+', (err, fd) => {
-    //   if (err) {
-    //     res.status(500).send('Could not save recording');
-    //   } else {
-    //     fs.writeFile(fd, recording, (err) => {
-    //       if (err) {
-    //         res.status(500).send('Could not save recording');
-    //       } else {
-    //         fs.readFile(fd, (err, result) => {
-    //           if (err) {
-    //             res.status(500).send('Could not save recording');
-    //           }
-    //           fs.close(fd, (err) => {
-    //             if (err) {
-    //               res.status(500).send('Could not save recording');
-    //             }
-    //             res.status(201).send(result);
-    //           });
-    //         });
-    //       }
-    //     });
-    //   }
-    // });
-    const video = new FfmpegCommand(recording)
-      .input('./images/cassette-tape.jpg');
-    client.authenticate(scopes)
-      .then(async () => {
-        const result = await youtube.videos.insert(
-          {
-            part: 'id,snippet,status',
-            requestBody: {
-              snippet: {
-                title: 'User recording',
-              },
-              status: {
-                privacyStatus: 'private',
-              },
-            },
-            media: {
-              body: video,
-            },
-          },
-        );
-        const { data } = result;
-        res.status(201).json(data);
-      });
+    const { id } = req.user;
+    fs.open(`server/audio/${id}.ogg`, 'w+', (err, fd) => {
+      if (err) {
+        res.status(500).send('Could not save recording');
+      } else {
+        fs.writeFile(fd, recording, (err) => {
+          if (err) {
+            res.status(500).send('Could not save recording');
+          } else {
+            fs.readFile(fd, (err, result) => {
+              if (err) {
+                res.status(500).send('Could not save recording');
+              }
+              fs.close(fd, (err) => {
+                if (err) {
+                  res.status(500).send('Could not save recording');
+                }
+                res.status(201).send(id);
+              });
+            });
+          }
+        });
+      }
+    });
+    // const outStream = fs.createWriteStream('../testVideo.mp4');
+    // const video = new FfmpegCommand(buffer)
+    //   .format('ogg')
+    //   .input('./server/images/cassette-tape.jpg')
+    //   .loop()
+    //   .output('outputfile.mp4')
+    //   .audioCodec('aac')
+    //   .videoCodec('libx264')
+    //   .on('error', (err, stdout, stderr) => {
+    //     console.error(`Failed to process video: ${err}`);
+    //   })
+    //   .pipe(outStream, { end: true });
+    // client.authenticate(scopes)
+    //   .then(async () => {
+    //     const result = await youtube.videos.insert(
+    //       {
+    //         part: 'id,snippet,status',
+    //         requestBody: {
+    //           snippet: {
+    //             title: 'User recording',
+    //           },
+    //           status: {
+    //             privacyStatus: 'private',
+    //           },
+    //         },
+    //         media: {
+    //           body: video,
+    //         },
+    //       },
+    //     );
+    //     const { data } = result;
+    //     res.status(201).json(data);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     res.status(500).send('Failed to upload track');
+    //   });
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to upload track');
