@@ -49,6 +49,7 @@ const playlistSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  useCount: Number,
 });
 playlistSchema.plugin(findOrCreate);
 playlistSchema.plugin(autoIncrement.plugin, 'playlist');
@@ -67,6 +68,20 @@ const userSchema = new mongoose.Schema({
 });
 userSchema.plugin(findOrCreate);
 const User = mongoose.model('User', userSchema);
+
+
+/* Schema for sound files to be stored for filters and/or
+ * breaking effects
+ */
+
+const soundSchema = new mongoose.Schema({
+  id: Number,
+  soundName: String,
+  soundBuffer: Buffer,
+});
+
+soundSchema.plugin(findOrCreate);
+const Sound = mongoose.model('Sound', soundSchema);
 
 /**
  * findCreate uses the findOrCreate plugin to check if document is created
@@ -177,10 +192,10 @@ const updatePlaylist = async function (filter, update, callback) {
   callback(data);
 };
 
-
 module.exports.findCreate = findCreate;
 module.exports.Playlist = Playlist;
 module.exports.User = User;
+module.exports.Sound = Sound;
 module.exports.storePlaylist = storePlaylist;
 module.exports.updatePlaylist = updatePlaylist;
 module.exports.retrievePlaylist = retrievePlaylist;
