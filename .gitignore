@@ -1,6 +1,6 @@
 node_modules
 dist/bundle.js
 .env
-audio.ogg
+server/audio/*
 auth.json
 server/client_id.json
