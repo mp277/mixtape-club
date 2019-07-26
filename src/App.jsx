@@ -144,7 +144,12 @@ class App extends React.Component {
      * between rendering the play and pause button.
      */
     onPlayVideo() {
-        this.state.player.playVideo();
+        const { userRecording } = this.state;
+        if (userRecording) {
+            document.getElementById('user-recording').play();
+        } else {
+            this.state.player.playVideo();
+        }
         this.setState({
             playing: true,
         })
@@ -182,7 +187,12 @@ class App extends React.Component {
 
 
     onPauseVideo() {
-        this.state.player.pauseVideo();
+        const { userRecording } = this.state;
+        if (userRecording) {
+            document.getElementById('user-recording').pause();
+        } else {
+            this.state.player.pauseVideo();
+        }
         this.setState({
             playing: false,
         })
@@ -224,6 +234,7 @@ class App extends React.Component {
         axios.post('/search', { query })
             .then((response) => {
                 this.setState({
+                    userRecording: null,
                     searchResults: response.data.items,
                     selectedResult: response.data.items[0],
                 })
@@ -309,14 +320,13 @@ class App extends React.Component {
      */
     onPassSongToSideA(song) {
         const { sideA } = this.state;
-        console.log('song no opts', song);
 
         song.opts = this.state.opts;
-        console.log('song', song);
         if (sideA.length < 5) {
             this.setState(prevState => {
                 return {
                     recording: false,
+                    userRecording: null,
                     sideA: prevState.sideA.concat(song),
                     opts: {
                         playerVars: {
@@ -338,14 +348,13 @@ class App extends React.Component {
      */
     onPassSongToSideB(song) {
         const { sideB } = this.state;
-        console.log('song no opts', song);
 
         song.opts = this.state.opts;
-        console.log('song', song);
         if (sideB.length < 5) {
             this.setState(prevState => {
                 return {
                     recording: false,
+                    userRecording: null,
                     sideB: prevState.sideB.concat(song),
                     opts: {
                         playerVars: {
@@ -517,10 +526,18 @@ class App extends React.Component {
         axios.post('/upload', formData, {
             'Content-Type': 'multipart/form-data',
         })
-            .then(result => {
-                console.log(result);
+            .then(({ data }) => {
                 this.setState({
-                    userRecording: result.data,
+                    userRecording: data,
+                    selectedResult: {
+                        snippet: {
+                            title: 'My recording',
+                        },
+                        id: {
+                            videoId: data,
+                        },
+                        userRecording: true,
+                    }
                 });
             })
             .catch(err => console.log(err));
@@ -533,7 +550,7 @@ class App extends React.Component {
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                    <Container opts={opts} onForward={this.onForward} onBackward={this.onBackward} onStopBackward={this.onStopBackward} onStopForward={this.onStopForward} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} recordUser={recordUser} />
+                <Container opts={opts} onForward={this.onForward} onBackward={this.onBackward} onStopBackward={this.onStopBackward} onStopForward={this.onStopForward} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} recordUser={recordUser} />
 
                 </div>
             </Router>
