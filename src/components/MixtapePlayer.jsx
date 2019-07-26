@@ -41,8 +41,12 @@ class MixtapePlayer extends React.Component {
             currentTrack: 0,
             currentPlaylistId: '',
             toggleLink: false,
+
             oscillator: '',
             stopInterval: null,
+            timesPlayed: 0,
+            context: null,
+            static: null
         }
         
         this.getUserPlaylists();
@@ -60,6 +64,7 @@ class MixtapePlayer extends React.Component {
         this.onFilter = this.onFilter.bind(this);
         this.onTrackEnd = this.onTrackEnd.bind(this);
         this.distortTape = this.distortTape.bind(this);
+        this.getStatic = this.getStatic.bind(this);
         
         this.divStyle = {
             borderRadius: '5px',
@@ -71,7 +76,22 @@ class MixtapePlayer extends React.Component {
     }
 
     componentWillMount() {
+        window.addEventListener('load', init, false);
+
+        function init() {
+            try {
+                // Fix up for prefixing
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.state({
+                    context: new AudioContext(),
+                })
+            } catch(e) {
+                alert('Web Audio API is not supported in this browser');
+            }
+        }
+
         this.loadShared()
+        this.getStatic()
         if(this.state.googleId !== null){
             this.getUserPlaylists();
         }
@@ -97,8 +117,8 @@ class MixtapePlayer extends React.Component {
                 let bVideoArray = [];
                 let aTitleArray = [];
                 let bTitleArray = [];
-                let aOpts = [];
                 let bSideOpt = [];
+                let aOpts = [];
 
                 console.log('data!!', data);
 
@@ -117,11 +137,13 @@ class MixtapePlayer extends React.Component {
                         aTitleArray.push(video.snippet.title);
                         aOpts.push(video.opts);
                     })
+
                     bSide.forEach(video => {
                         bVideoArray.push(video.id.videoId);
                         bTitleArray.push(video.snippet.title);
                         bSideOpt.push(video.opts)
                     })
+
                     this.setState({
                         currentPlaylistId: data.response[0]._id,
                         aSideLinks: aVideoArray,
@@ -142,17 +164,52 @@ class MixtapePlayer extends React.Component {
             })
     }
 
-    onFilter() {
-        let audioContext = new AudioContext();
+    getStatic() {
+        const { context } = this.state;
 
-        var oscillator = audioContext.createOscillator();
+        function reqListener () {
+            console.log(this.responseText);
+        }
+
+        const oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", reqListener);
+
+        oReq.open("GET", "/soundfiles", true);
+        oReq.responseType = 'arraybuffer';
+
+        // Decode asynchronously
+        oReq.onload = function() {
+            context.decodeAudioData(oReq.response, function(buffer) {
+                this.setState({
+                    static: buffer,
+                });
+                this.onFilter();
+            }, ()=> console.log(err));
+        }
+
+        oReq.send();
+
+    }
+
+    onFilter(buffer) {
+        // let audioContext = new AudioContext();
+        const { context } = this.state;
+
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+
+        source.connect(context.destination);
+        // the context's destination (the speakers)
+        source.start(0);   
+
+        // var oscillator = context.createOscillator();
         // var filter = audioContext.createBiquadFilter;
 
-        oscillator.connect(audioContext.destination);
-        this.setState({
-            oscillator: oscillator.start(),
-        })
-        this.distortTape()
+        // oscillator.connect(context.destination);
+        // this.setState({
+            // oscillator: oscillator,
+        // })
+        // this.distortTape()
         console.log('filter called')
 
     }
@@ -208,12 +265,14 @@ class MixtapePlayer extends React.Component {
                         })
                     } else {
                         const { aSide, tapeDeck, tapeLabel, userId } = response.data;
+
                         aSide.forEach(video => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
                             console.log('video', data.response[index].aSideLinks.opts);
                         })
+
                         this.setState({
                             aSideLinks: aVideoArray,
                             aSideTitles: aTitleArray,
@@ -267,7 +326,7 @@ class MixtapePlayer extends React.Component {
         }
         // this.setState({ lastInd });
         this.state.player.playVideo(); 
-        this.distortTape(400, this.onFilter);
+        // this.distortTape(400, this.onFilter);
         
     }
 
@@ -281,7 +340,7 @@ class MixtapePlayer extends React.Component {
             this.setState({
                 playing: true,
             })
-            this.distortTape(400, this.onFilter);
+            // this.distortTape(400, this.onFilter);
         }
     }
 
@@ -586,7 +645,7 @@ class MixtapePlayer extends React.Component {
         
         this.setState({ 
             stopInterval: null,
-            oscillator: oscillator.stop(),
+            // oscillator: oscillator.stop(),
          });
     }
 
@@ -611,7 +670,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.distortTape.bind(this, 400, this.onFilter)} />
+                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} /* onClick={this.distortTape.bind(this, 400, this.onFilter)} */ />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
