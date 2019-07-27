@@ -46,7 +46,8 @@ class MixtapePlayer extends React.Component {
             stopInterval: null,
             timesPlayed: 0,
             context: null,
-            static: null
+            static: null,
+            views: 0,
         }
         
         this.getUserPlaylists();
@@ -183,7 +184,7 @@ class MixtapePlayer extends React.Component {
             axios.post('/mixtape-player', { id })
                 .then(function(response) {
                     if (response.data.bSide) {
-                        const { aSide, bSide, tapeDeck, tapeLabel, userId } = response.data;
+                        const { aSide, bSide, tapeDeck, tapeLabel, userId , views} = response.data;
                         aSide.forEach((video, index) => {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
@@ -205,6 +206,7 @@ class MixtapePlayer extends React.Component {
                             aSideOpts: aOpts,
                             bSideOpts: bSideOpts,
                             currentTrack: 0,
+                            videoViews: views
                         })
                     } else {
                         const { aSide, tapeDeck, tapeLabel, userId } = response.data;
@@ -509,6 +511,14 @@ class MixtapePlayer extends React.Component {
                 player.playVideo();  
             }
         })
+        axios.post('/new-view', {id: event.currentTarget.id})
+        .then((response) => {
+            console.log(response);
+            const { views } = response.data;
+            this.setState({ views })
+            console.log(this.state.views);
+        });
+        
     }
     
 
