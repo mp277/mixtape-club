@@ -1,14 +1,14 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCircle, faDrum, faCircle } from '@fortawesome/free-solid-svg-icons'
 
 /** Search Player component renders the player interface connected with the Search component 
  * at the create-mixtapes route and is a child component of CreateMixtapes.
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser} = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser, onKick, onSnare} = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -19,6 +19,26 @@ const SearchPlayer = (props) => {
         marginTop: '20%',
         marginLeft: '10%',
         marginRight: '10%',
+        color: '#fff',
+    }
+
+    const drumStyle = {
+        verticalAlign: 'middle',
+        // display: 'inline-block',
+        fontSize: '2.5rem',
+        marginTop: '20%',
+        marginLeft: '10%',
+        // marginRight: '10%',
+        color: '#fff',
+    }
+
+    const snareStyle = {
+        verticalAlign: 'middle',
+        // display: 'inline-block',
+        fontSize: '2.5rem',
+        marginTop: '20%',
+        marginLeft: '2%',
+        // marginRight: '10%',
         color: '#fff',
     }
 
@@ -112,6 +132,10 @@ const SearchPlayer = (props) => {
                 </div>
                 <div className="col-10 col-md-8"> 
                     <h4 style={titleStyle}>{title}</h4> 
+                    <div className="row">
+                    <FontAwesomeIcon  style={drumStyle} icon={faDrum} onClick={onKick} />
+                    <FontAwesomeIcon  style={snareStyle} icon={faCircle} onClick={onSnare} />
+                    </div>
                 </div>
                 <div className="row col-11 col-md-3 player-button-row mx-auto">
                     {

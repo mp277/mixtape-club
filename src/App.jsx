@@ -55,6 +55,8 @@ class App extends React.Component {
             isPublic: false,
             recordUser: false,
             userRecording: null,
+            kick: null,
+            snare: null,
         }
 
         this.onSearch = this.onSearch.bind(this);
@@ -84,6 +86,9 @@ class App extends React.Component {
 
         this.startRecordUser = this.startRecordUser.bind(this);
         this.stopRecordUser = this.stopRecordUser.bind(this);
+
+        this.onKick = this.onKick.bind(this);
+        this.onSnare = this.onSnare.bind(this);
     }
 
 
@@ -545,6 +550,111 @@ class App extends React.Component {
             .catch(err => console.log(err));
     }
 
+    onKick() {
+        function noise (){
+            var context = new AudioContext;
+            function Kick(context) {
+                this.context = context;
+            };
+            Kick.prototype.setup = function () {
+                this.osc = this.context.createOscillator();
+                // this.osc.frequency.value = 300;
+                this.gain = this.context.createGain();
+                this.osc.connect(this.gain);
+                this.gain.connect(this.context.destination)
+            };
+
+            Kick.prototype.trigger = function (time) {
+                this.setup();
+
+                this.osc.frequency.setValueAtTime(150, time);
+                this.gain.gain.setValueAtTime(1, time);
+
+                this.osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+                this.gain.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+
+                this.osc.start(time);
+
+                this.osc.stop(time + 0.5);
+            };
+            var kick = new Kick(context);
+            var now = context.currentTime;
+            kick.trigger(now);
+            kick.trigger(now + 0.5);
+            kick.trigger(now + 1);
+        }
+        this.setState({
+            kick: noise(),
+        })
+    }
+
+    onSnare() {
+        function noise() {
+            var context = new AudioContext;
+
+            function Snare(context) {
+                this.context = context;
+            };
+
+        Snare.prototype.noiseBuffer = function () {
+            var bufferSize = this.context.sampleRate;
+            var buffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+            var output = buffer.getChannelData(0);
+
+            for (var i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+
+            return buffer;
+        };
+
+        Snare.prototype.setup = function () {
+            this.noise = this.context.createBufferSource();
+            this.noise.buffer = this.noiseBuffer();
+            var noiseFilter = this.context.createBiquadFilter();
+            noiseFilter.type = 'highpass';
+            noiseFilter.frequency.value = 1000;
+            this.noise.connect(noiseFilter);
+
+            this.noiseEnvelope = this.context.createGain();
+            noiseFilter.connect(this.noiseEnvelope);
+
+            this.noiseEnvelope.connect(this.context.destination);
+
+            this.osc = this.context.createOscillator();
+            this.osc.type = 'triangle';
+
+            this.oscEnvelope = this.context.createGain();
+            this.osc.connect(this.oscEnvelope);
+            this.oscEnvelope.connect(this.context.destination);
+        };
+
+        Snare.prototype.trigger = function (time) {
+            this.setup();
+
+            this.noiseEnvelope.gain.setValueAtTime(1, time);
+            this.noiseEnvelope.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+            this.noise.start(time)
+
+            this.osc.frequency.setValueAtTime(100, time);
+            this.oscEnvelope.gain.setValueAtTime(0.7, time);
+            this.oscEnvelope.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+            this.osc.start(time)
+
+            this.osc.stop(time + 0.2);
+            this.noise.stop(time + 0.2);
+        };
+            var snare = new Snare(context);
+            var now = context.currentTime;
+            snare.trigger(now);
+            snare.trigger(now + 0.5);
+            snare.trigger(now + 1);
+    }
+    this.setState({
+        snare: noise(),
+    })
+    }
+
 
     render() {
         const { isAuthenticated, searchResults, playing, recording, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, isPublic, opts, recordUser } = this.state;
@@ -552,7 +662,7 @@ class App extends React.Component {
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                <Container opts={opts} onForward={this.onForward} onBackward={this.onBackward} onStopBackward={this.onStopBackward} onStopForward={this.onStopForward} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} recordUser={recordUser} />
+                <Container opts={opts} onForward={this.onForward} onBackward={this.onBackward} onStopBackward={this.onStopBackward} onStopForward={this.onStopForward} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onStopRecordVideo={this.onStopRecordVideo} onRecordVideo={this.onRecordVideo} onChange={this.onChange} onSearch={this.onSearch} onGenerate={this.onGenerate} onResultClick={this.onResultClick} playing={playing} recording={recording} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} onMakePublic={this.onMakePublic} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} isPublic={isPublic} queryParam={queryParam} googleId={googleId} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} recordUser={recordUser} onKick={this.onKick} onSnare={this.onSnare}/>
 
                 </div>
             </Router>
