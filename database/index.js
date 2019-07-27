@@ -177,7 +177,7 @@ const updatePlaylist = async function (filter, update, callback) {
   // should be dynamic for whatever info is passed
   // const filter = { userId: 'franco3445' };
   // const update = { tapeDeck: 'green' };
-  const data = await Playlist.findOneAndUpdate(filter, update, { new: true });
+  const data = await Playlist.findOneAndUpdate(filter, update, { new: true }).exec();
   callback(data);
 };
 
