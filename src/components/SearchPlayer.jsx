@@ -8,7 +8,7 @@ import { faPlay, faPause, faPlus, faForward, faBackward, faDotCircle, faStopCirc
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser, onKick, onSnare} = props;
+    const { onReady, onPlayVideo, onPauseVideo, onUserRecordingEnded, playing, recording, onBackward, onForward, onStopBackward, onStopForward, onStopRecordVideo, onRecordVideo, selectedResult, onPassToSideA, onPassToSideB, opts, recordUser, startRecordUser, stopRecordUser, onKick, onSnare} = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -76,6 +76,9 @@ const SearchPlayer = (props) => {
             const audio = document.getElementById('user-recording');
             const audioURL = window.URL.createObjectURL(blob);
             audio.setAttribute('controls', '');
+            audio.addEventListener('ended', () => {
+                onUserRecordingEnded();
+            });
             audio.src = audioURL;
         }
         mediaRecord.stop();
