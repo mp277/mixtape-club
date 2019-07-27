@@ -188,14 +188,11 @@ class MixtapePlayer extends React.Component {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts);
-
-                            console.log('video', data.response[index].aSideLinks.opts);
                         })
                         bSide.forEach((video, index) => {
                             bVideoArray.push(video.id.videoId);
                             bTitleArray.push(video.snippet.title);
                             bSideOpts.push(data.response[index].aSideLinks.opts);
-
                         })
                         this.setState({
                             aSideLinks: aVideoArray,
@@ -216,8 +213,7 @@ class MixtapePlayer extends React.Component {
                             aVideoArray.push(video.id.videoId);
                             aTitleArray.push(video.snippet.title);
                             aOpts.push(data.response[index].aSideLinks.opts)
-                            console.log('video', data.response[index].aSideLinks.opts);
-                        })
+                        });
 
                         this.setState({
                             aSideLinks: aVideoArray,
@@ -226,13 +222,13 @@ class MixtapePlayer extends React.Component {
                             sidePlaying: aVideoArray,
                             tapeTitle: tapeLabel,
                             aSideOpts: aOpts,
-                        })
+                        });
                     }
                 })
                 .catch((error) => {
                     // handle error
                     console.log(error);
-                })
+                });
         }
     }
 
