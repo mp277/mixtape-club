@@ -381,12 +381,18 @@ app.post('/mixtape-player/', (req, res) => {
   const { id } = req.body;
   const filter = { _id: id };
 
+  db.updatePlaylist(filter, { $inc: { views: 1 } }, (response) => {
+    if (response) {
+      console.log('Worked');
+    }
+  });
+
   db.retrievePlaylist(filter, (response) => {
     if (response === null) {
       res.end('No Results Found');
     } else {
       const {
-        aSideLinks, bSideLinks, tapeDeck, tapeLabel, userId,
+        aSideLinks, bSideLinks, tapeDeck, tapeLabel, userId, views,
       } = response;
       const aSide = JSON.parse(aSideLinks);
       let bSide;
@@ -398,6 +404,7 @@ app.post('/mixtape-player/', (req, res) => {
           tapeDeck,
           tapeLabel,
           userId,
+          views,
         };
         res.send(data);
       } else {
