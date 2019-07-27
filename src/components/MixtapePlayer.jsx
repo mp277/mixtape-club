@@ -159,65 +159,18 @@ class MixtapePlayer extends React.Component {
             })
     }
 
-    init() {
-        console.log(this);
-        try {
-            // Fix up for prefixing
-            AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.state.context = new AudioContext();
-
-        } catch (e) {
-            alert(`Web Audio API is not supported in this browser: ${e}`);
-        }
-    }
-
-    getStatic() {
-        const { context } = this.state;
-
-        function reqListener () {
-            console.log(this.responseText);
-        }
-
-        const oReq = new XMLHttpRequest();
-        oReq.addEventListener("load", reqListener);
-
-        oReq.open("GET", "/soundfiles/?file=static", true);
-        oReq.responseType = 'arraybuffer';
-
-        // Decode asynchronously
-        oReq.onload = function() {
-            context.decodeAudioData(oReq.response, function(buffer) {
-                this.setState({
-                    static: buffer,
-                });
-                this.onFilter();
-            }, ()=> console.log(err));
-        }
-
-        oReq.send();
-
-    }
-
-    onFilter(buffer) {
+    onFilter() {
         // let audioContext = new AudioContext();
-        const { context } = this.state;
 
-        const source = context.createBufferSource();
-        source.buffer = buffer;
+        // var oscillator = audioContext.createOscillator();
+        // // var filter = audioContext.createBiquadFilter;
 
-        source.connect(context.destination);
-        // the context's destination (the speakers)
-        source.start(0);   
-
-        // var oscillator = context.createOscillator();
-        // var filter = audioContext.createBiquadFilter;
-
-        // oscillator.connect(context.destination);
+        // oscillator.connect(audioContext.destination);
         // this.setState({
-            // oscillator: oscillator,
+        //     // oscillator: oscillator.start(),
         // })
         // this.distortTape()
-        console.log('filter called')
+        // console.log('filter called')
 
     }
 
@@ -677,7 +630,7 @@ class MixtapePlayer extends React.Component {
                 <div className="row col-12 col-md-12" >
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
-                    <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} /* onClick={this.distortTape.bind(this, 400, this.onFilter)} */ />
+                    {/* <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} onClick={this.distortTape.bind(this, 400, this.onFilter)} /> */}
                     <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faForward} onMouseDown={this.onForward} onMouseUp={this.onStopForward} />
                 </div>
             </div>
