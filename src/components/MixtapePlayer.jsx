@@ -64,8 +64,6 @@ class MixtapePlayer extends React.Component {
         this.onFilter = this.onFilter.bind(this);
         this.onTrackEnd = this.onTrackEnd.bind(this);
         this.distortTape = this.distortTape.bind(this);
-        this.getStatic = this.getStatic.bind(this);
-        this.init = this.init.bind(this);
         
         this.divStyle = {
             borderRadius: '5px',
@@ -77,19 +75,13 @@ class MixtapePlayer extends React.Component {
     }
 
     componentWillMount() {
-        // window.addEventListener('load', init, false);
 
        
 
         this.loadShared()
-        this.getStatic()
         if(this.state.googleId !== null){
             this.getUserPlaylists();
         }
-    }
-
-    componentDidMount(){        
-        this.init();
     }
 
     /**
