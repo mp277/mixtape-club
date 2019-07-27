@@ -65,6 +65,7 @@ class MixtapePlayer extends React.Component {
         this.onTrackEnd = this.onTrackEnd.bind(this);
         this.distortTape = this.distortTape.bind(this);
         this.getStatic = this.getStatic.bind(this);
+        this.init = this.init.bind(this);
         
         this.divStyle = {
             borderRadius: '5px',
@@ -76,25 +77,19 @@ class MixtapePlayer extends React.Component {
     }
 
     componentWillMount() {
-        window.addEventListener('load', init, false);
+        // window.addEventListener('load', init, false);
 
-        function init() {
-            try {
-                // Fix up for prefixing
-                window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                this.state({
-                    context: new AudioContext(),
-                })
-            } catch(e) {
-                alert('Web Audio API is not supported in this browser');
-            }
-        }
+       
 
         this.loadShared()
         this.getStatic()
         if(this.state.googleId !== null){
             this.getUserPlaylists();
         }
+    }
+
+    componentDidMount(){        
+        this.init();
     }
 
     /**
@@ -164,6 +159,18 @@ class MixtapePlayer extends React.Component {
             })
     }
 
+    init() {
+        console.log(this);
+        try {
+            // Fix up for prefixing
+            AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.state.context = new AudioContext();
+
+        } catch (e) {
+            alert(`Web Audio API is not supported in this browser: ${e}`);
+        }
+    }
+
     getStatic() {
         const { context } = this.state;
 
@@ -174,7 +181,7 @@ class MixtapePlayer extends React.Component {
         const oReq = new XMLHttpRequest();
         oReq.addEventListener("load", reqListener);
 
-        oReq.open("GET", "/soundfiles", true);
+        oReq.open("GET", "/soundfiles/?file=static", true);
         oReq.responseType = 'arraybuffer';
 
         // Decode asynchronously
