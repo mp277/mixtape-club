@@ -49,6 +49,10 @@ const playlistSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  views: {
+    type: Number,
+    default: 0,
+  },
 });
 playlistSchema.plugin(findOrCreate);
 playlistSchema.plugin(autoIncrement.plugin, 'playlist');
